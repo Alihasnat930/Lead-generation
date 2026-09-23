@@ -1,0 +1,906 @@
+{
+  "source": "https://download.geonames.org/export/dump/cities15000.zip",
+  "attribution": "GeoNames, CC BY 4.0",
+  "cities": {
+    "us:New York": {
+      "lat": 40.71427,
+      "lon": -74.00597,
+      "geonames_id": "5128581",
+      "source_name": "New York City"
+    },
+    "us:Los Angeles": {
+      "lat": 34.05223,
+      "lon": -118.24368,
+      "geonames_id": "5368361",
+      "source_name": "Los Angeles"
+    },
+    "us:Chicago": {
+      "lat": 41.85003,
+      "lon": -87.65005,
+      "geonames_id": "4887398",
+      "source_name": "Chicago"
+    },
+    "us:Houston": {
+      "lat": 29.76328,
+      "lon": -95.36327,
+      "geonames_id": "4699066",
+      "source_name": "Houston"
+    },
+    "us:Phoenix": {
+      "lat": 33.44838,
+      "lon": -112.07404,
+      "geonames_id": "5308655",
+      "source_name": "Phoenix"
+    },
+    "us:Philadelphia": {
+      "lat": 39.95238,
+      "lon": -75.16362,
+      "geonames_id": "4560349",
+      "source_name": "Philadelphia"
+    },
+    "us:San Antonio": {
+      "lat": 29.42412,
+      "lon": -98.49363,
+      "geonames_id": "4726206",
+      "source_name": "San Antonio"
+    },
+    "us:San Diego": {
+      "lat": 32.71571,
+      "lon": -117.16472,
+      "geonames_id": "5391811",
+      "source_name": "San Diego"
+    },
+    "us:Dallas": {
+      "lat": 32.78306,
+      "lon": -96.80667,
+      "geonames_id": "4684888",
+      "source_name": "Dallas"
+    },
+    "us:Austin": {
+      "lat": 30.26715,
+      "lon": -97.74306,
+      "geonames_id": "4671654",
+      "source_name": "Austin"
+    },
+    "us:Jacksonville": {
+      "lat": 30.33218,
+      "lon": -81.65565,
+      "geonames_id": "4160021",
+      "source_name": "Jacksonville"
+    },
+    "us:Fort Worth": {
+      "lat": 32.72541,
+      "lon": -97.32085,
+      "geonames_id": "4691930",
+      "source_name": "Fort Worth"
+    },
+    "us:Columbus": {
+      "lat": 39.96118,
+      "lon": -82.99879,
+      "geonames_id": "4509177",
+      "source_name": "Columbus"
+    },
+    "us:Charlotte": {
+      "lat": 35.22709,
+      "lon": -80.84313,
+      "geonames_id": "4460243",
+      "source_name": "Charlotte"
+    },
+    "us:Indianapolis": {
+      "lat": 39.76838,
+      "lon": -86.15804,
+      "geonames_id": "4259418",
+      "source_name": "Indianapolis"
+    },
+    "us:Seattle": {
+      "lat": 47.60621,
+      "lon": -122.33207,
+      "geonames_id": "5809844",
+      "source_name": "Seattle"
+    },
+    "us:Denver": {
+      "lat": 39.73915,
+      "lon": -104.9847,
+      "geonames_id": "5419384",
+      "source_name": "Denver"
+    },
+    "us:Boston": {
+      "lat": 42.35843,
+      "lon": -71.05977,
+      "geonames_id": "4930956",
+      "source_name": "Boston"
+    },
+    "us:Nashville": {
+      "lat": 36.16589,
+      "lon": -86.78444,
+      "geonames_id": "4644585",
+      "source_name": "Nashville"
+    },
+    "us:Las Vegas": {
+      "lat": 36.17497,
+      "lon": -115.13722,
+      "geonames_id": "5506956",
+      "source_name": "Las Vegas"
+    },
+    "us:Portland": {
+      "lat": 45.52345,
+      "lon": -122.67621,
+      "geonames_id": "5746545",
+      "source_name": "Portland"
+    },
+    "us:Detroit": {
+      "lat": 42.33143,
+      "lon": -83.04575,
+      "geonames_id": "4990729",
+      "source_name": "Detroit"
+    },
+    "us:Memphis": {
+      "lat": 35.14953,
+      "lon": -90.04898,
+      "geonames_id": "4641239",
+      "source_name": "Memphis"
+    },
+    "us:Louisville": {
+      "lat": 38.25424,
+      "lon": -85.75941,
+      "geonames_id": "4299276",
+      "source_name": "Louisville"
+    },
+    "us:Baltimore": {
+      "lat": 39.29038,
+      "lon": -76.61219,
+      "geonames_id": "4347778",
+      "source_name": "Baltimore"
+    },
+    "us:Milwaukee": {
+      "lat": 43.0389,
+      "lon": -87.90647,
+      "geonames_id": "5263045",
+      "source_name": "Milwaukee"
+    },
+    "us:Albuquerque": {
+      "lat": 35.08449,
+      "lon": -106.65114,
+      "geonames_id": "5454711",
+      "source_name": "Albuquerque"
+    },
+    "us:Tucson": {
+      "lat": 32.22174,
+      "lon": -110.92648,
+      "geonames_id": "5318313",
+      "source_name": "Tucson"
+    },
+    "us:Fresno": {
+      "lat": 36.74773,
+      "lon": -119.77237,
+      "geonames_id": "5350937",
+      "source_name": "Fresno"
+    },
+    "us:Sacramento": {
+      "lat": 38.58157,
+      "lon": -121.4944,
+      "geonames_id": "5389489",
+      "source_name": "Sacramento"
+    },
+    "us:Atlanta": {
+      "lat": 33.749,
+      "lon": -84.38798,
+      "geonames_id": "4180439",
+      "source_name": "Atlanta"
+    },
+    "us:Miami": {
+      "lat": 25.77427,
+      "lon": -80.19366,
+      "geonames_id": "4164138",
+      "source_name": "Miami"
+    },
+    "us:Tampa": {
+      "lat": 27.94752,
+      "lon": -82.45843,
+      "geonames_id": "4174757",
+      "source_name": "Tampa"
+    },
+    "us:Orlando": {
+      "lat": 28.53834,
+      "lon": -81.37924,
+      "geonames_id": "4167147",
+      "source_name": "Orlando"
+    },
+    "us:Raleigh": {
+      "lat": 35.7721,
+      "lon": -78.63861,
+      "geonames_id": "4487042",
+      "source_name": "Raleigh"
+    },
+    "us:Omaha": {
+      "lat": 41.25626,
+      "lon": -95.94043,
+      "geonames_id": "5074472",
+      "source_name": "Omaha"
+    },
+    "us:Minneapolis": {
+      "lat": 44.97997,
+      "lon": -93.26384,
+      "geonames_id": "5037649",
+      "source_name": "Minneapolis"
+    },
+    "us:Cleveland": {
+      "lat": 41.4995,
+      "lon": -81.69541,
+      "geonames_id": "5150529",
+      "source_name": "Cleveland"
+    },
+    "us:Pittsburgh": {
+      "lat": 40.44062,
+      "lon": -79.99589,
+      "geonames_id": "5206379",
+      "source_name": "Pittsburgh"
+    },
+    "us:San Francisco": {
+      "lat": 37.77493,
+      "lon": -122.41942,
+      "geonames_id": "5391959",
+      "source_name": "San Francisco"
+    },
+    "gb:London": {
+      "lat": 51.50853,
+      "lon": -0.12574,
+      "geonames_id": "2643743",
+      "source_name": "London"
+    },
+    "gb:Manchester": {
+      "lat": 53.48095,
+      "lon": -2.23743,
+      "geonames_id": "2643123",
+      "source_name": "Manchester"
+    },
+    "gb:Birmingham": {
+      "lat": 52.48142,
+      "lon": -1.89983,
+      "geonames_id": "2655603",
+      "source_name": "Birmingham"
+    },
+    "gb:Leeds": {
+      "lat": 53.79648,
+      "lon": -1.54785,
+      "geonames_id": "2644688",
+      "source_name": "Leeds"
+    },
+    "gb:Glasgow": {
+      "lat": 55.86515,
+      "lon": -4.25763,
+      "geonames_id": "2648579",
+      "source_name": "Glasgow"
+    },
+    "gb:Liverpool": {
+      "lat": 53.41058,
+      "lon": -2.97794,
+      "geonames_id": "2644210",
+      "source_name": "Liverpool"
+    },
+    "gb:Bristol": {
+      "lat": 51.45523,
+      "lon": -2.59665,
+      "geonames_id": "2654675",
+      "source_name": "Bristol"
+    },
+    "gb:Edinburgh": {
+      "lat": 55.95206,
+      "lon": -3.19648,
+      "geonames_id": "2650225",
+      "source_name": "Edinburgh"
+    },
+    "gb:Sheffield": {
+      "lat": 53.38297,
+      "lon": -1.4659,
+      "geonames_id": "2638077",
+      "source_name": "Sheffield"
+    },
+    "gb:Cardiff": {
+      "lat": 51.48,
+      "lon": -3.18,
+      "geonames_id": "2653822",
+      "source_name": "Cardiff"
+    },
+    "gb:Belfast": {
+      "lat": 54.59682,
+      "lon": -5.92541,
+      "geonames_id": "2655984",
+      "source_name": "Belfast"
+    },
+    "gb:Nottingham": {
+      "lat": 52.9536,
+      "lon": -1.15047,
+      "geonames_id": "2641170",
+      "source_name": "Nottingham"
+    },
+    "gb:Leicester": {
+      "lat": 52.6386,
+      "lon": -1.13169,
+      "geonames_id": "2644668",
+      "source_name": "Leicester"
+    },
+    "gb:Newcastle": {
+      "lat": 54.97328,
+      "lon": -1.61396,
+      "geonames_id": "2641673",
+      "source_name": "Newcastle upon Tyne"
+    },
+    "gb:Southampton": {
+      "lat": 50.90395,
+      "lon": -1.40428,
+      "geonames_id": "2637487",
+      "source_name": "Southampton"
+    },
+    "gb:Brighton": {
+      "lat": 50.82838,
+      "lon": -0.13947,
+      "geonames_id": "2654710",
+      "source_name": "Brighton"
+    },
+    "gb:Cambridge": {
+      "lat": 52.2,
+      "lon": 0.11667,
+      "geonames_id": "2653941",
+      "source_name": "Cambridge"
+    },
+    "gb:Oxford": {
+      "lat": 51.75222,
+      "lon": -1.25596,
+      "geonames_id": "2640729",
+      "source_name": "Oxford"
+    },
+    "gb:Reading": {
+      "lat": 51.45625,
+      "lon": -0.97113,
+      "geonames_id": "2639577",
+      "source_name": "Reading"
+    },
+    "gb:Coventry": {
+      "lat": 52.40656,
+      "lon": -1.51217,
+      "geonames_id": "2652221",
+      "source_name": "Coventry"
+    },
+    "de:Berlin": {
+      "lat": 52.52437,
+      "lon": 13.41053,
+      "geonames_id": "2950159",
+      "source_name": "Berlin"
+    },
+    "de:Hamburg": {
+      "lat": 53.55073,
+      "lon": 9.99302,
+      "geonames_id": "2911298",
+      "source_name": "Hamburg"
+    },
+    "de:Munich": {
+      "lat": 48.13743,
+      "lon": 11.57549,
+      "geonames_id": "2867714",
+      "source_name": "Munich"
+    },
+    "de:Cologne": {
+      "lat": 50.93333,
+      "lon": 6.95,
+      "geonames_id": "2886242",
+      "source_name": "Köln"
+    },
+    "de:Frankfurt": {
+      "lat": 50.11552,
+      "lon": 8.68417,
+      "geonames_id": "2925533",
+      "source_name": "Frankfurt am Main"
+    },
+    "de:Stuttgart": {
+      "lat": 48.78232,
+      "lon": 9.17702,
+      "geonames_id": "2825297",
+      "source_name": "Stuttgart"
+    },
+    "de:Dusseldorf": {
+      "lat": 51.22319,
+      "lon": 6.77927,
+      "geonames_id": "2934246",
+      "source_name": "Düsseldorf"
+    },
+    "de:Leipzig": {
+      "lat": 51.33962,
+      "lon": 12.37129,
+      "geonames_id": "2879139",
+      "source_name": "Leipzig"
+    },
+    "fr:Paris": {
+      "lat": 48.85341,
+      "lon": 2.3488,
+      "geonames_id": "2988507",
+      "source_name": "Paris"
+    },
+    "fr:Lyon": {
+      "lat": 45.74906,
+      "lon": 4.84789,
+      "geonames_id": "2996944",
+      "source_name": "Lyon"
+    },
+    "fr:Marseille": {
+      "lat": 43.29695,
+      "lon": 5.38107,
+      "geonames_id": "2995469",
+      "source_name": "Marseille"
+    },
+    "fr:Toulouse": {
+      "lat": 43.60426,
+      "lon": 1.44367,
+      "geonames_id": "2972315",
+      "source_name": "Toulouse"
+    },
+    "fr:Nice": {
+      "lat": 43.70313,
+      "lon": 7.26608,
+      "geonames_id": "2990440",
+      "source_name": "Nice"
+    },
+    "fr:Nantes": {
+      "lat": 47.21725,
+      "lon": -1.55336,
+      "geonames_id": "2990969",
+      "source_name": "Nantes"
+    },
+    "fr:Bordeaux": {
+      "lat": 44.84124,
+      "lon": -0.58046,
+      "geonames_id": "3031582",
+      "source_name": "Bordeaux"
+    },
+    "fr:Lille": {
+      "lat": 50.63391,
+      "lon": 3.05512,
+      "geonames_id": "2998324",
+      "source_name": "Lille"
+    },
+    "es:Madrid": {
+      "lat": 40.4165,
+      "lon": -3.70256,
+      "geonames_id": "3117735",
+      "source_name": "Madrid"
+    },
+    "es:Barcelona": {
+      "lat": 41.38879,
+      "lon": 2.15899,
+      "geonames_id": "3128760",
+      "source_name": "Barcelona"
+    },
+    "es:Valencia": {
+      "lat": 39.47391,
+      "lon": -0.37966,
+      "geonames_id": "2509954",
+      "source_name": "Valencia"
+    },
+    "es:Seville": {
+      "lat": 37.38283,
+      "lon": -5.97317,
+      "geonames_id": "2510911",
+      "source_name": "Sevilla"
+    },
+    "es:Malaga": {
+      "lat": 36.72016,
+      "lon": -4.42034,
+      "geonames_id": "2514256",
+      "source_name": "Málaga"
+    },
+    "es:Bilbao": {
+      "lat": 43.26271,
+      "lon": -2.92528,
+      "geonames_id": "3128026",
+      "source_name": "Bilbao"
+    },
+    "it:Rome": {
+      "lat": 41.89193,
+      "lon": 12.51133,
+      "geonames_id": "3169070",
+      "source_name": "Rome"
+    },
+    "it:Milan": {
+      "lat": 45.46427,
+      "lon": 9.18951,
+      "geonames_id": "3173435",
+      "source_name": "Milan"
+    },
+    "it:Naples": {
+      "lat": 40.85216,
+      "lon": 14.26811,
+      "geonames_id": "3172394",
+      "source_name": "Naples"
+    },
+    "it:Turin": {
+      "lat": 45.07049,
+      "lon": 7.68682,
+      "geonames_id": "3165524",
+      "source_name": "Turin"
+    },
+    "it:Bologna": {
+      "lat": 44.49381,
+      "lon": 11.33875,
+      "geonames_id": "3181928",
+      "source_name": "Bologna"
+    },
+    "it:Florence": {
+      "lat": 43.77925,
+      "lon": 11.24626,
+      "geonames_id": "3176959",
+      "source_name": "Florence"
+    },
+    "nl:Amsterdam": {
+      "lat": 52.37403,
+      "lon": 4.88969,
+      "geonames_id": "2759794",
+      "source_name": "Amsterdam"
+    },
+    "nl:Rotterdam": {
+      "lat": 51.9225,
+      "lon": 4.47917,
+      "geonames_id": "2747891",
+      "source_name": "Rotterdam"
+    },
+    "nl:Utrecht": {
+      "lat": 52.09083,
+      "lon": 5.12222,
+      "geonames_id": "2745912",
+      "source_name": "Utrecht"
+    },
+    "nl:The Hague": {
+      "lat": 52.07667,
+      "lon": 4.29861,
+      "geonames_id": "2747373",
+      "source_name": "The Hague"
+    },
+    "nl:Eindhoven": {
+      "lat": 51.44083,
+      "lon": 5.47778,
+      "geonames_id": "2756253",
+      "source_name": "Eindhoven"
+    },
+    "ie:Dublin": {
+      "lat": 53.33306,
+      "lon": -6.24889,
+      "geonames_id": "2964574",
+      "source_name": "Dublin"
+    },
+    "ie:Cork": {
+      "lat": 51.89797,
+      "lon": -8.47061,
+      "geonames_id": "2965140",
+      "source_name": "Cork"
+    },
+    "ie:Galway": {
+      "lat": 53.27245,
+      "lon": -9.05095,
+      "geonames_id": "2964180",
+      "source_name": "Galway"
+    },
+    "ie:Limerick": {
+      "lat": 52.66472,
+      "lon": -8.62306,
+      "geonames_id": "2962943",
+      "source_name": "Limerick"
+    },
+    "be:Brussels": {
+      "lat": 50.85045,
+      "lon": 4.34878,
+      "geonames_id": "2800866",
+      "source_name": "Brussels"
+    },
+    "be:Antwerp": {
+      "lat": 51.22047,
+      "lon": 4.40026,
+      "geonames_id": "2803138",
+      "source_name": "Antwerp"
+    },
+    "be:Ghent": {
+      "lat": 51.05,
+      "lon": 3.71667,
+      "geonames_id": "2797656",
+      "source_name": "Gent"
+    },
+    "be:Bruges": {
+      "lat": 51.20892,
+      "lon": 3.22424,
+      "geonames_id": "2800931",
+      "source_name": "Brugge"
+    },
+    "at:Vienna": {
+      "lat": 48.20849,
+      "lon": 16.37208,
+      "geonames_id": "2761369",
+      "source_name": "Vienna"
+    },
+    "at:Graz": {
+      "lat": 47.06733,
+      "lon": 15.44197,
+      "geonames_id": "2778067",
+      "source_name": "Graz"
+    },
+    "at:Salzburg": {
+      "lat": 47.79941,
+      "lon": 13.04399,
+      "geonames_id": "2766824",
+      "source_name": "Salzburg"
+    },
+    "at:Linz": {
+      "lat": 48.30639,
+      "lon": 14.28611,
+      "geonames_id": "2772400",
+      "source_name": "Linz"
+    },
+    "pt:Lisbon": {
+      "lat": 38.72509,
+      "lon": -9.1498,
+      "geonames_id": "2267057",
+      "source_name": "Lisbon"
+    },
+    "pt:Porto": {
+      "lat": 41.1485,
+      "lon": -8.61097,
+      "geonames_id": "2735943",
+      "source_name": "Porto"
+    },
+    "pt:Braga": {
+      "lat": 41.5514,
+      "lon": -8.42311,
+      "geonames_id": "2742032",
+      "source_name": "Braga"
+    },
+    "pl:Warsaw": {
+      "lat": 52.22977,
+      "lon": 21.01178,
+      "geonames_id": "756135",
+      "source_name": "Warsaw"
+    },
+    "pl:Krakow": {
+      "lat": 50.06143,
+      "lon": 19.93658,
+      "geonames_id": "3094802",
+      "source_name": "Kraków"
+    },
+    "pl:Wroclaw": {
+      "lat": 51.10286,
+      "lon": 17.03006,
+      "geonames_id": "3081368",
+      "source_name": "Wrocław"
+    },
+    "pl:Gdansk": {
+      "lat": 54.35227,
+      "lon": 18.64912,
+      "geonames_id": "3099434",
+      "source_name": "Gdańsk"
+    },
+    "pl:Poznan": {
+      "lat": 52.40692,
+      "lon": 16.92993,
+      "geonames_id": "3088171",
+      "source_name": "Poznań"
+    },
+    "se:Stockholm": {
+      "lat": 59.32938,
+      "lon": 18.06871,
+      "geonames_id": "2673730",
+      "source_name": "Stockholm"
+    },
+    "se:Gothenburg": {
+      "lat": 57.70716,
+      "lon": 11.96679,
+      "geonames_id": "2711537",
+      "source_name": "Gothenburg"
+    },
+    "se:Malmo": {
+      "lat": 55.60587,
+      "lon": 13.00073,
+      "geonames_id": "2692969",
+      "source_name": "Malmö"
+    },
+    "dk:Copenhagen": {
+      "lat": 55.67594,
+      "lon": 12.56553,
+      "geonames_id": "2618425",
+      "source_name": "Copenhagen"
+    },
+    "dk:Aarhus": {
+      "lat": 56.15674,
+      "lon": 10.21076,
+      "geonames_id": "2624652",
+      "source_name": "Århus"
+    },
+    "dk:Odense": {
+      "lat": 55.39594,
+      "lon": 10.38831,
+      "geonames_id": "2615876",
+      "source_name": "Odense"
+    },
+    "fi:Helsinki": {
+      "lat": 60.16952,
+      "lon": 24.93545,
+      "geonames_id": "658225",
+      "source_name": "Helsinki"
+    },
+    "fi:Tampere": {
+      "lat": 61.49911,
+      "lon": 23.78712,
+      "geonames_id": "634963",
+      "source_name": "Tampere"
+    },
+    "fi:Turku": {
+      "lat": 60.45148,
+      "lon": 22.26869,
+      "geonames_id": "633679",
+      "source_name": "Turku"
+    },
+    "cz:Prague": {
+      "lat": 50.08804,
+      "lon": 14.42076,
+      "geonames_id": "3067696",
+      "source_name": "Prague"
+    },
+    "cz:Brno": {
+      "lat": 49.19522,
+      "lon": 16.60796,
+      "geonames_id": "3078610",
+      "source_name": "Brno"
+    },
+    "cz:Ostrava": {
+      "lat": 49.83465,
+      "lon": 18.28204,
+      "geonames_id": "3068799",
+      "source_name": "Ostrava"
+    },
+    "gr:Athens": {
+      "lat": 37.98376,
+      "lon": 23.72784,
+      "geonames_id": "264371",
+      "source_name": "Athens"
+    },
+    "gr:Thessaloniki": {
+      "lat": 40.64072,
+      "lon": 22.93493,
+      "geonames_id": "734077",
+      "source_name": "Thessaloníki"
+    },
+    "ro:Bucharest": {
+      "lat": 44.43225,
+      "lon": 26.10626,
+      "geonames_id": "683506",
+      "source_name": "Bucharest"
+    },
+    "ro:Cluj-Napoca": {
+      "lat": 46.76667,
+      "lon": 23.6,
+      "geonames_id": "681290",
+      "source_name": "Cluj-Napoca"
+    },
+    "ro:Timisoara": {
+      "lat": 45.75372,
+      "lon": 21.22571,
+      "geonames_id": "665087",
+      "source_name": "Timişoara"
+    },
+    "hu:Budapest": {
+      "lat": 47.49835,
+      "lon": 19.04045,
+      "geonames_id": "3054643",
+      "source_name": "Budapest"
+    },
+    "hu:Debrecen": {
+      "lat": 47.53167,
+      "lon": 21.62444,
+      "geonames_id": "721472",
+      "source_name": "Debrecen"
+    },
+    "bg:Sofia": {
+      "lat": 42.69751,
+      "lon": 23.32415,
+      "geonames_id": "727011",
+      "source_name": "Sofia"
+    },
+    "bg:Plovdiv": {
+      "lat": 42.15387,
+      "lon": 24.75001,
+      "geonames_id": "728193",
+      "source_name": "Plovdiv"
+    },
+    "hr:Zagreb": {
+      "lat": 45.81444,
+      "lon": 15.97798,
+      "geonames_id": "3186886",
+      "source_name": "Zagreb"
+    },
+    "hr:Split": {
+      "lat": 43.50891,
+      "lon": 16.43915,
+      "geonames_id": "3190261",
+      "source_name": "Split"
+    },
+    "sk:Bratislava": {
+      "lat": 48.14816,
+      "lon": 17.10674,
+      "geonames_id": "3060972",
+      "source_name": "Bratislava"
+    },
+    "sk:Kosice": {
+      "lat": 48.71441,
+      "lon": 21.25802,
+      "geonames_id": "724443",
+      "source_name": "Košice"
+    },
+    "si:Ljubljana": {
+      "lat": 46.05108,
+      "lon": 14.50513,
+      "geonames_id": "3196359",
+      "source_name": "Ljubljana"
+    },
+    "si:Maribor": {
+      "lat": 46.55583,
+      "lon": 15.64593,
+      "geonames_id": "3195506",
+      "source_name": "Maribor"
+    },
+    "lt:Vilnius": {
+      "lat": 54.68916,
+      "lon": 25.2798,
+      "geonames_id": "593116",
+      "source_name": "Vilnius"
+    },
+    "lt:Kaunas": {
+      "lat": 54.90156,
+      "lon": 23.90909,
+      "geonames_id": "598316",
+      "source_name": "Kaunas"
+    },
+    "lv:Riga": {
+      "lat": 56.946,
+      "lon": 24.10589,
+      "geonames_id": "456172",
+      "source_name": "Riga"
+    },
+    "ee:Tallinn": {
+      "lat": 59.43696,
+      "lon": 24.75353,
+      "geonames_id": "588409",
+      "source_name": "Tallinn"
+    },
+    "ee:Tartu": {
+      "lat": 58.38062,
+      "lon": 26.72509,
+      "geonames_id": "588335",
+      "source_name": "Tartu"
+    },
+    "lu:Luxembourg City": {
+      "lat": 49.60982,
+      "lon": 6.13268,
+      "geonames_id": "2960316",
+      "source_name": "Luxembourg"
+    },
+    "mt:Valletta": {
+      "lat": 35.89968,
+      "lon": 14.5148,
+      "geonames_id": "2562305",
+      "source_name": "Valletta"
+    },
+    "mt:Sliema": {
+      "lat": 35.91247,
+      "lon": 14.50175,
+      "geonames_id": "2562501",
+      "source_name": "Sliema"
+    },
+    "cy:Nicosia": {
+      "lat": 35.17284,
+      "lon": 33.35397,
+      "geonames_id": "146268",
+      "source_name": "Nicosia"
+    },
+    "cy:Limassol": {
+      "lat": 34.68406,
+      "lon": 33.03794,
+      "geonames_id": "146384",
+      "source_name": "Limassol"
+    }
+  }
+}

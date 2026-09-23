@@ -1,0 +1,12 @@
+# Environment files
+.env
+.env.*
+*.env
+*.env.*
+credentials/*.json
+data/
+.backups/
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/

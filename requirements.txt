@@ -1,0 +1,9 @@
+streamlit>=1.63,<2
+gspread>=6.0
+google-auth>=2.29
+requests>=2.31
+python-dotenv>=1.0
+pandas>=2.0
+beautifulsoup4>=4.12,<5
+tldextract>=5.1,<6
+ddgs==9.16.0
