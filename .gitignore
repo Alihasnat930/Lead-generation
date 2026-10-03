@@ -10,3 +10,7 @@ __pycache__/
 *.pyc
 .pytest_cache/
 .venv/
+!.env.example
+.streamlit/secrets.toml
+.streamlit/secrets.*.toml
+.vscode/

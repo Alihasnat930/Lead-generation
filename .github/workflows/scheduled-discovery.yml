@@ -1,0 +1,55 @@
+name: Scheduled discovery
+
+on:
+  schedule:
+    - cron: "15 */3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: scheduled-discovery
+  cancel-in-progress: false
+
+jobs:
+  discovery:
+    if: vars.ENABLE_DISCOVERY_JOBS == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Validate deployment state
+        env:
+          GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
+          SERVICE_ACCOUNT_JSON: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          DISCOVERY_JOB_ID: ${{ vars.DISCOVERY_JOB_ID }}
+        run: |
+          test -n "$GOOGLE_SHEET_ID"
+          test -n "$SERVICE_ACCOUNT_JSON"
+          test -n "$SUPABASE_URL"
+          test -n "$SUPABASE_SERVICE_ROLE_KEY"
+          test -n "$DISCOVERY_JOB_ID"
+      - name: Write service-account key
+        env:
+          SERVICE_ACCOUNT_JSON: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+        run: |
+          mkdir -p credentials
+          printf '%s' "$SERVICE_ACCOUNT_JSON" > credentials/service_account.json
+      - name: Run discovery cycle
+        env:
+          ENABLE_CLOUD_JOBS: 'true'
+          GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
+          SERVICE_ACCOUNT_FILE: credentials/service_account.json
+          DISCOVERY_JOB_ID: ${{ vars.DISCOVERY_JOB_ID }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          python scripts/cloud_cycle.py discovery

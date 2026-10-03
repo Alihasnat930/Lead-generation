@@ -133,6 +133,11 @@ def serve(port, no_browser):
                     raise RuntimeError(f"Dashboard did not become ready within 60 seconds. Read {log_path}.")
                 time.sleep(0.3)
             say("Ready. Campaigns start their own background workers from the dashboard.")
+            subprocess.Popen([sys.executable, str(ROOT / 'outreach_worker.py')], cwd=ROOT,
+                             stdout=log, stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL,
+                             creationflags=getattr(subprocess,'CREATE_NO_WINDOW',0) if os.name=='nt' else 0,
+                             start_new_session=os.name!='nt')
+            say('Sheet sync service started. Automatic emails run only when enabled in Outreach & CRM.')
             say("Keep this window open. Ctrl+C stops the dashboard; pause campaigns in the app first if needed.")
             if not no_browser:
                 webbrowser.open(url)

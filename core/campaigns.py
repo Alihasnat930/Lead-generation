@@ -54,6 +54,10 @@ def launch(job_id, store=None):
     if job["settings"].get("use_ai") and not config.OPENROUTER_API_KEY:
         raise ValueError("Save your OpenRouter key before enabling AI review.")
     token = store.reserve_worker(job_id)
+    if config.CLOUD_MODE:
+        thread = threading.Thread(target=run_job,args=(job_id,),kwargs={'store':store,'token':token},daemon=True)
+        thread.start()
+        return thread.ident
     flags = getattr(subprocess, "CREATE_NO_WINDOW", 0) if os.name == "nt" else 0
     try:
         LOG_DIR.mkdir(parents=True, exist_ok=True)

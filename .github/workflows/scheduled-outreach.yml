@@ -1,0 +1,62 @@
+name: Scheduled outreach
+
+on:
+  schedule:
+    - cron: "0 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: scheduled-outreach
+  cancel-in-progress: false
+
+jobs:
+  outreach:
+    if: vars.ENABLE_OUTREACH_JOBS == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Validate required secrets
+        env:
+          GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
+          SERVICE_ACCOUNT_JSON: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          test -n "$GMAIL_ADDRESS"
+          test -n "$GMAIL_APP_PASSWORD"
+          test -n "$GOOGLE_SHEET_ID"
+          test -n "$SERVICE_ACCOUNT_JSON"
+          test -n "$SUPABASE_URL"
+          test -n "$SUPABASE_SERVICE_ROLE_KEY"
+      - name: Write service-account key
+        env:
+          SERVICE_ACCOUNT_JSON: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+        run: |
+          mkdir -p credentials
+          printf '%s' "$SERVICE_ACCOUNT_JSON" > credentials/service_account.json
+      - name: Run outreach
+        env:
+          ENABLE_CLOUD_JOBS: 'true'
+          GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
+          SERVICE_ACCOUNT_FILE: credentials/service_account.json
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          OUTREACH_INITIAL_LIMIT: ${{ vars.OUTREACH_INITIAL_LIMIT }}
+          OUTREACH_MIN_SCORE: ${{ vars.OUTREACH_MIN_SCORE }}
+          OUTREACH_FOLLOWUP_LIMIT: ${{ vars.OUTREACH_FOLLOWUP_LIMIT }}
+          YOUR_NAME: ${{ vars.YOUR_NAME }}
+        run: |
+          python scripts/cloud_cycle.py outreach

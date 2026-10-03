@@ -70,6 +70,8 @@ class Store:
 
     @contextmanager
     def db(self):
+        from .cloud_runtime import guard
+        guard()
         connection = sqlite3.connect(self.path, timeout=30)
         connection.row_factory = sqlite3.Row
         try:
@@ -86,6 +88,8 @@ class Store:
             db.executemany("INSERT INTO queries(job_id,data,source) VALUES(?,?,?)",
                            [(job_id, json.dumps(query), query.get("source_kind", "")) for query in queries])
         self.event(job_id, f"Campaign created: {len(queries):,} search combinations.")
+        from .cloud_runtime import checkpoint_campaign
+        checkpoint_campaign()
         return job_id
 
     def job(self, job_id):

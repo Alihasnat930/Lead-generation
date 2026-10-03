@@ -67,7 +67,7 @@ Every qualified lead must pass all gates:
 
 Score: readable website **15**, niche **30**, location **20**, email **25** (or phone **15** / form **10**), multiple readable pages **10**. These are research heuristics, not proof of intent, budget, authority or demand.
 
-**Qualification is local and costs no API credits.** The rules evaluate fetched evidence and produce an explained score. Free campaigns reject the paid-model-review option even if an old configuration enables it. Existing OpenRouter settings are retained only for the legacy outreach workflow, which is separate from discovery. No language model is needed to scrape, validate contacts, score or export leads.
+**Qualification is local and costs no API credits.** The rules evaluate fetched evidence and produce an explained score. Free campaigns reject the paid-model-review option even if an old configuration enables it. Outreach also uses local templates; OpenRouter is optional only for legacy integrations. No language model is needed to scrape, score, draft or export leads.
 
 Emails are labelled `published_unverified`: a public source URL exists, but mailbox deliverability has not been checked. Clearly unsuitable departmental inboxes (press, privacy, careers, billing, etc.) are filtered out. Phone numbers and forms are similarly sourced, not ownership-verified. Contacts are never generated. Service recommendations are hypotheses, not confirmed business problems.
 
@@ -84,13 +84,15 @@ Emails are labelled `published_unverified`: a public source URL exists, but mail
 - An in-flight source request may be repeated after a crash because the remote request and local checkpoint are not one transaction. The original attempt still counts toward the local allowance.
 - Keep the complete `data` folder for backups; SQLite may have active WAL/SHM files. Stop workers before moving the database.
 
-Credential-bearing URLs, non-HTTP schemes, non-public resolved addresses and cross-domain website redirects are rejected. This is a local single-user application, not an authenticated hosted service.
+Credential-bearing URLs, non-HTTP schemes, non-public resolved addresses and cross-domain website redirects are rejected. The local launcher binds to localhost. The hosted entrypoint requires a password and durable cloud storage. Hosted access is one shared workspace, without separate client tenants.
 
 ## Google Sheets and outreach
 
 Discovery works independently of Sheets. **Outreach & CRM → Sync qualified leads** appends in batches, skips existing domains/emails, uses the sheet's actual header order, and preserves existing CRM statuses. Share the configured sheet with the service account in `credentials/service_account.json` to enable syncing.
 
-Original manual outreach and follow-up actions are retained and operate on Sheets after syncing. Discovery never sends email or Discord notifications. Update suppression and reply statuses before sending; Gmail replies are not automatically synchronized. A published contact does not establish consent to receive email.
+Outreach saves a delivery reservation before SMTP submission, then marks it sent only after Gmail accepts it. Sheet writes are verified and use actual header names. Gmail Sent history, replies, opt-outs, bounces, suppression and daily caps are checked before sending. Interrupted sends block retries until reconciled with Gmail. Definite transient failures allow at most three attempts with exponential backoff; permanent rejections do not retry. Follow-ups wait at least 4 days, then 10 days from the initial email and 6 days after the first follow-up. All emails include LinkedIn, GitHub and Upwork links. Published email addresses do not prove mailbox deliverability or buying intent.
+
+`run_app.bat` starts the dashboard and Sheet sync service. Automatic emails require the separate saved **Enable daily automatic outreach** setting; manual sends do not enable it. The authentication check never sends email. Discovery does not send messages.
 
 Settings are documented in `.env.example`. Free discovery works without an `.env` file; copy the example to `.env` only when configuring optional integrations. Never publish `.env`, service-account keys, backups or your lead database.
 
@@ -127,6 +129,21 @@ lead_gen_app/
 The old placeholder file and duplicate dotenv file are archived in `.backups/before-folder-cleanup/`. The active `.env`, service-account key, lead database and campaign checkpoints are preserved. Paths are resolved from the project root, not the terminal's current directory. If moving this project to another computer, keep `data`, `.env` and `credentials` private, install Python there, and let the launcher create a fresh `.venv`.
 
 ## Development
+
+## Cloud deployment status
+
+Deploy **`streamlit_app.py`**, Python **3.11**, on Streamlit Community Cloud. Follow
+[`docs/DEPLOY_STREAMLIT.md`](docs/DEPLOY_STREAMLIT.md) for the two Supabase migrations,
+private secrets, database bootstrap and client login. `scripts/prepare_release.py`
+generates a password and secrets template under ignored `data/deployment/`.
+
+The hosted app and optional Actions jobs share an exclusive database-enforced lease.
+Compressed SQLite backups include WAL transactions. Discovery checkpoints every
+30 seconds when changed; outreach changes checkpoint synchronously and fail closed
+if cloud storage is unavailable. Schedules are disabled by default in GitHub Actions.
+Streamlit sleep and external service limits mean this free deployment is not an
+always-on availability guarantee. See the release report for verified versus pending
+checks; source code being ready does not mean an app has been published.
 
 ```powershell
 .\.venv\Scripts\python.exe -m unittest discover -s tests -v

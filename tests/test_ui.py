@@ -15,7 +15,7 @@ class UITests(unittest.TestCase):
     def test_navigation_and_campaign_creation_without_network(self):
         with tempfile.TemporaryDirectory() as folder:
             store = Store(Path(folder) / "ui.db")
-            with patch("core.store.Store", return_value=store), patch("requests.get") as get, patch("requests.post") as post:
+            with patch("core.store.Store", return_value=store), patch.object(config,'APP_LOGIN_PASSWORD_HASH',''), patch.object(config,'OUTREACH_DATABASE_PATH',str(Path(folder)/'outreach.db')), patch("requests.get") as get, patch("requests.post") as post:
                 app = AppTest.from_file(str(Path(__file__).resolve().parents[1] / "app.py"), default_timeout=30).run()
                 self.assertEqual(len(app.exception), 0)
                 for page in ("Lead database", "Settings", "Outreach & CRM", "Campaigns"):

@@ -3,13 +3,42 @@ import time
 from pathlib import Path
 import pandas as pd
 import streamlit as st
-from core import campaigns, sheets, pipeline
-from core.config import config
+from core import campaigns, sheets, pipeline, email_sender
+from core.config import config, verify_app_password
 from core.exports import csv_bytes
 from core.markets import NICHES, COUNTRIES, locations_for, plan_queries
+from core.mailbox import Mailbox
+from core.outreach_store import OutreachStore
+from core.supabase_client import check_schema as check_supabase_schema
 from core.store import Store
 
 st.set_page_config(page_title="Prospect Studio", page_icon="\u25ce", layout="wide", initial_sidebar_state="expanded")
+if config.CLOUD_MODE and not config.APP_LOGIN_PASSWORD_HASH:
+    st.error('Deployment setup required: configure APP_LOGIN_PASSWORD_HASH in Streamlit Secrets before opening this workspace.')
+    st.stop()
+if st.session_state.get('authenticated') and time.time()-st.session_state.get('authenticated_at',0)>8*3600:
+    st.session_state['authenticated']=False
+if config.APP_LOGIN_PASSWORD_HASH and not st.session_state.get("authenticated"):
+    st.title("Prospect Studio")
+    st.subheader("Private dashboard")
+    password = st.text_input("Password", type="password", key='login_password')
+    if st.button("Sign in", type="primary"):
+        from core.auth import authenticate
+        accepted,message=authenticate(password)
+        if accepted:
+            st.session_state["authenticated"] = True
+            st.session_state['authenticated_at']=time.time()
+            del st.session_state['login_password']
+            st.rerun()
+        st.error(message)
+    st.stop()
+if config.CLOUD_MODE:
+    from core.cloud_runtime import start_cloud_runtime
+    try:
+        start_cloud_runtime()
+    except Exception as exc:
+        st.error(str(exc) if isinstance(exc,ValueError) else 'Cloud storage setup is incomplete or unavailable. Check Supabase secrets and apply both SQL migrations.')
+        st.stop()
 st.markdown("""<style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap');
 html, body, [class*="css"], .stApp {font-family: 'DM Sans', sans-serif;}
@@ -37,6 +66,14 @@ h1,h2,h3 {font-family: 'Manrope', sans-serif !important; letter-spacing:-.035em;
 </style>""", unsafe_allow_html=True)
 
 store = Store()
+outreach_store = OutreachStore()
+if config.CLOUD_MODE:
+    @st.cache_resource
+    def start_hosted_services():
+        from core.outreach_scheduler import launch
+        launch()
+        return True
+    start_hosted_services()
 with st.sidebar:
     st.markdown('<div class="brand"><span>&#9678;</span> Prospect Studio</div>', unsafe_allow_html=True)
     st.caption("BUSINESS DISCOVERY WORKSPACE")
@@ -46,7 +83,10 @@ with st.sidebar:
     st.markdown("**Your markets**")
     st.caption("United States \u00b7 United Kingdom \u00b7 European Union")
     st.markdown("**Your workspace**")
-    st.caption("Local storage \u00b7 Persistent jobs \u00b7 Source evidence")
+    st.caption(("Cloud backups" if config.CLOUD_MODE else "Local storage")+" \u00b7 Persistent jobs \u00b7 Source evidence")
+    if config.APP_LOGIN_PASSWORD_HASH and st.button('Sign out'):
+        st.session_state.clear()
+        st.rerun()
     st.divider()
     st.caption("Free discovery: OpenStreetMap + web search")
     st.caption("Qualification: local scoring, no paid model")
@@ -297,10 +337,24 @@ elif page == "Settings":
         st.markdown("[DDGS on GitHub](https://github.com/deedy5/ddgs) · [Overpass on GitHub](https://github.com/drolbr/Overpass-API) · [OpenStreetMap attribution](https://www.openstreetmap.org/copyright)")
     with st.container(border=True):
         st.subheader("Google Sheets & outreach")
-        st.caption("Your existing service account and Gmail configuration are retained. Edit .env to change them.")
-        st.write("Service account file: " + ("Available" if Path(config.SERVICE_ACCOUNT_FILE).exists() else "Missing"))
+        st.caption('Update connections in Streamlit Secrets.' if config.CLOUD_MODE else 'Your existing service account and Gmail configuration are retained. Edit .env to change them.')
+        st.write("Service account: " + ("Available" if config.SERVICE_ACCOUNT_JSON or Path(config.SERVICE_ACCOUNT_FILE).exists() else "Missing"))
         st.write("Gmail sender: " + ("Configured" if config.GMAIL_ADDRESS and config.GMAIL_APP_PASSWORD else "Not configured"))
-        st.caption("Discovery does not send messages. Outreach and follow-ups run only from their dedicated buttons.")
+        if st.button("Check Gmail & Sheet access"):
+            try:
+                email_sender.check_authentication()
+                with Mailbox():
+                    sheets.read_all("Leads", sheets.LEADS_HEADERS)
+                st.success("Gmail sending/reading and Google Sheet access are available.")
+            except Exception as exc:
+                safe_error(exc)
+        if st.button("Check Supabase cloud schema"):
+            try:
+                check_supabase_schema()
+                st.success("Supabase is reachable and the cloud schema is installed.")
+            except Exception as exc:
+                safe_error(exc)
+        st.caption("Discovery does not send messages. Use Outreach & CRM for sending controls, delivery history and the optional daily schedule.")
     with st.expander("How quality and volume work", expanded=True):
         st.write("Qualified means the business website supports the niche and target location, a required public contact method is present, and the fit score passes your threshold. It does not prove purchase intent.")
         st.write("A 1,000-lead target is a stopping condition, not a promised yield. Narrow markets, duplicate businesses, missing contacts, blocked pages or API limits can produce a smaller result. Every shortfall is reported with a reason.")
@@ -308,46 +362,5 @@ elif page == "Settings":
         st.caption("Backups of your original code: .backups/before-premium-upgrade \u00b7 Lead database: data/prospect_studio.db")
 
 elif page == "Outreach & CRM":
-    st.markdown('<div class="eyebrow">FROM RESEARCH TO CONVERSATION</div>', unsafe_allow_html=True)
-    st.title("Outreach & CRM")
-    sync_tab, email_tab, followup_tab = st.tabs(["Sync & review", "Send outreach", "Follow-ups"])
-    with sync_tab:
-        st.write("Sync new qualified leads to your existing Google Sheet. Existing company records and their outreach status are preserved.")
-        if st.button("Sync qualified leads to Google Sheets", type="primary"):
-            try:
-                with st.spinner("Syncing new records in batches..."):
-                    count = sheets.append_new_qualified(store.leads(status="QUALIFIED"))
-                st.success(f"Added {count:,} new records. Existing domains and emails were skipped.")
-            except Exception as exc:
-                safe_error(exc)
-        if st.button("Load CRM snapshot"):
-            try:
-                records = sheets.read_all("Leads", sheets.LEADS_HEADERS)
-                st.dataframe(pd.DataFrame(records).astype(str), hide_index=True, width="stretch")
-            except Exception as exc:
-                safe_error(exc)
-    with email_tab:
-        st.write("Send to qualified, uncontacted leads in your Google Sheet. The suppression list is checked before sending.")
-        a, b, c = st.columns(3)
-        limit = a.number_input("Email limit for this run", 1, 30, 10)
-        minimum = b.slider("Minimum outreach score", 0, 100, 75)
-        signature = c.text_input("Signature name", value=config.YOUR_NAME)
-        if st.button("Send outreach emails", type="primary"):
-            log = st.empty()
-            try:
-                with st.spinner("Sending outreach..."):
-                    sent = pipeline.run_outreach(limit, minimum, signature, log=log.text)
-                st.success(f"Sent {len(sent)} outreach emails.")
-            except Exception as exc:
-                safe_error(exc)
-    with followup_tab:
-        st.write("Send due follow-ups in the day 3 / 7 / 14 sequence. Keep replies and opt-outs updated in your Sheet before running this action.")
-        followup_name = st.text_input("Follow-up signature", value=config.YOUR_NAME)
-        if st.button("Send due follow-ups", type="primary"):
-            log = st.empty()
-            try:
-                with st.spinner("Sending follow-ups..."):
-                    sent = pipeline.run_followups(3, 7, 14, followup_name, log=log.text)
-                st.success(f"Sent {len(sent)} follow-ups.")
-            except Exception as exc:
-                safe_error(exc)
+    from core.outreach_ui import render
+    render(store)

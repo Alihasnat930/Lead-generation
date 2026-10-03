@@ -313,13 +313,18 @@ class ExtractionTests(unittest.TestCase):
 class SheetTests(unittest.TestCase):
     def test_sync_preserves_existing_crm_and_uses_actual_header_order(self):
         ws = Mock()
-        ws.get_all_values.return_value = [["email", "status", "domain", "company_name"], ["old@clinic.co.uk", "CONTACTED", "clinic.co.uk", "Clinic"]]
+        headers = ["email", "status", "domain", "company_name"]
+        before = [headers, ["old@clinic.co.uk", "CONTACTED", "clinic.co.uk", "Clinic"]]
+        ws.row_values.return_value = headers
+        ws.row_count = 100
+        ws.get.side_effect = [before, before + [["info@new.com", "QUALIFIED", "new.com", "New"]]]
+        ws.spreadsheet.url = 'https://docs.google.com/spreadsheets/d/fixture/edit'
         leads = [dict(domain="clinic.co.uk", email="old@clinic.co.uk", qualification_status="QUALIFIED", status="QUALIFIED"),
                  dict(domain="new.com", email="info@new.com", qualification_status="QUALIFIED", status="QUALIFIED", company_name="New")]
         with patch("core.sheets.get_or_create_worksheet", return_value=ws):
-            self.assertEqual(sheets.append_new_qualified(leads), 1)
-        ws.update.assert_not_called()
-        ws.append_rows.assert_called_once_with([["info@new.com", "QUALIFIED", "new.com", "New"]], value_input_option="RAW")
+            self.assertEqual(sheets.append_new_qualified(leads)['inserted'], 1)
+        ws.batch_update.assert_not_called()
+        ws.update.assert_called_once_with(range_name='A3', values=[["info@new.com", "QUALIFIED", "new.com", "New"]], value_input_option="RAW")
 
 
 if __name__ == "__main__":

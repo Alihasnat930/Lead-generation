@@ -7,3 +7,4 @@ pandas>=2.0
 beautifulsoup4>=4.12,<5
 tldextract>=5.1,<6
 ddgs==9.16.0
+supabase>=2.15,<3
