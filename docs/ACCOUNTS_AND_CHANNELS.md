@@ -88,8 +88,16 @@ may also use the existing gated GitHub Actions workflows.
 
 GitHub CLI is authenticated as **Alihasnat930**. Supabase's publishable key is mapped
 to `SUPABASE_ANON_KEY`, and its live Auth endpoint responds with email confirmation
-enabled. The new secret key is also configured through `SUPABASE_SECRET_KEY`; the
-project still needs both SQL migrations before cloud storage can start. Google OAuth, Twilio and Meta
+enabled. The new secret key is also configured through `SUPABASE_SECRET_KEY`.
+Both SQL migrations are applied, and both cloud backups have been restored and
+verified: 1,005 qualified leads, two campaigns and an empty email delivery ledger.
+GitHub Actions secrets are configured with both workflow gates disabled.
+The live Streamlit URL responds, but the prepared private secrets still need to be
+saved in its dashboard before account login and cloud restore can run there.
+Supabase Auth's Site URL and allowed redirects now match that live URL. Custom
+SMTP uses the existing Gmail credentials for signup verification with email
+confirmation required. Configuration read-back passed; delivery was not tested.
+Google OAuth, Twilio and Meta
 credentials have not been supplied, so real provider login/message submission has
 not been verified. Add them through the admin Settings forms or private environment.
 

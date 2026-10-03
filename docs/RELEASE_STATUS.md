@@ -1,11 +1,23 @@
 # Client release status — 3 October 2026
 
-**Local release verified. Cloud release awaiting account configuration; no live client URL verified.**
+**Streamlit deployment responds, but client access is blocked until its private secrets are saved.**
+
+App: https://lead-generation-2dxsvsggteqbzggxfiu8qo.streamlit.app/
+The hosted health endpoint returns `200 ok`. A live Streamlit session renders the
+missing-auth-configuration message, so health alone is not a successful app check.
+The deployed entrypoint is `streamlit_app.py` on `main`; the host reports Python
+3.14 and Streamlit 1.65.0. Automated release tests ran on Python 3.11.
 
 Latest update: GitHub CLI is authenticated as `Alihasnat930`. Account login/signup,
 approved email/Google access, Twilio and Meta WhatsApp settings, a consent-aware
 template queue and a dedicated Schedule page are implemented. The admin is
 `alihasnat.dev@gmail.com`. Supabase Auth is reachable with email confirmation enabled.
+Supabase CLI is authenticated, both SQL migrations are applied, and both cloud
+snapshots have been restored and checked. GitHub Actions secrets are configured;
+both automatic workflow gates remain disabled.
+Supabase Auth redirects point to the live URL. Custom signup SMTP uses the existing
+Gmail account with email confirmation required; configuration was read back, but no
+verification message was sent. Private deployment secrets include the live URL.
 See [accounts and channels](ACCOUNTS_AND_CHANNELS.md) for setup and remaining credentials.
 
 ## Fixed
@@ -54,11 +66,13 @@ SQLite copying and competing jobs overwriting the same snapshots.
 ## Migrations
 
 Local SQLite adds `attempts`, `retry_at` and `retryable` to existing delivery tables
-without deleting data. Supabase needs `supabase/schema.sql`, followed by
-`supabase/002_atomic_workspace.sql`. These cloud migrations have **not** been run
-against the user's project. The server key now connects, but the schema check reports
-missing tables (PGRST205); a database management connection or SQL Editor is needed
-to apply migrations. Existing cloud data is never overwritten by bootstrap.
+without deleting data. `supabase/schema.sql` and `supabase/002_atomic_workspace.sql`
+were applied together in a transaction through the authenticated Supabase CLI.
+The live schema check passes. Bootstrap uploaded the campaign and outreach stores;
+downloaded copies pass SQLite integrity checks and contain 1,005 qualified domains,
+6,510 review records, two campaigns and zero email deliveries. Local sending is
+locked after migration. Do not rerun bootstrap: cloud snapshots now exist and must
+not be overwritten.
 
 ## Test results
 
@@ -76,8 +90,15 @@ to apply migrations. Existing cloud data is never overwritten by bootstrap.
   debugging email or outreach email was sent.** Delivery ledger remains empty.
 - No Node frontend, REST server, lint/type-check configuration or build script is
   present. Python tests, compilation and Streamlit AppTest are the applicable checks.
-- Cloud snapshot tests exercise the client and failure handling with fakes. Actual
-  PostgreSQL functions, cloud restore and hosted SMTP/IMAP remain integration checks.
+- Live Supabase checks passed for lease acquisition, conflicting-owner rejection,
+  renewal, invalid-owner rejection, fenced snapshot writes and backup restore.
+  Anonymous table reads expose no rows and anonymous lease RPC calls are denied.
+  Hosted SMTP/IMAP and client access still need verification on the deployed host.
+- GitHub's Linux CI passed for code release `c7bd008`. The real local configuration
+  renders login/signup with no exception and hides the workspace before login.
+- Production-mode AppTest restored the real cloud backup into temporary databases,
+  confirmed 1,005 qualified leads and rendered account login/signup successfully.
+  This check ran locally; it does not replace checks on the Streamlit host.
 
 ## Security
 
@@ -90,24 +111,22 @@ in user-facing connection errors.
 
 ## Remaining / manual configuration
 
-1. **SUPABASE_SERVICE_ROLE_KEY** is now configured in the private `.env`, mapped from
-   the new-format `sb_secret_*` key, together with `SUPABASE_ANON_KEY`
-   (`sb_publishable_*`) for account login. The secret key authenticates against the
-   project, but it cannot run DDL, so the SQL still has to be applied in the dashboard.
-2. Apply both SQL migrations in the Supabase SQL editor, bootstrap the verified local
-   data once (`scripts/push_cloud_state.py`), then regenerate the private Streamlit
-   secrets template (`scripts/prepare_release.py`).
-3. In Streamlit Community Cloud, deploy `Alihasnat930/Lead-generation`, `main`,
-   **streamlit_app.py**, Python **3.11**, with those secrets.
-4. Verify deployed login, restored data, Sheet access and Gmail authentication.
-   Share its resulting URL/password only after those checks pass. Real delivery can
+1. Open the live app's **Manage app > Settings > Secrets** and paste the complete
+   private `data/deployment/streamlit-secrets.toml`, then save. The hosted session
+   currently shows `configure APP_LOGIN_PASSWORD_HASH` because the prepared account
+   configuration is absent. GitHub Actions secrets do not populate Streamlit Secrets.
+   This session has no authenticated Streamlit management/browser capability.
+2. Create and verify the admin account, then approve intended
+   client accounts. Google OAuth, Twilio and Meta credentials remain unconfigured.
+3. Verify deployed login, restored data, Sheet access and Gmail authentication.
+   Share the resulting URL only after those checks pass. Real delivery can
    be checked later with explicit authorization; current authorization is auth only.
 
 Exact commands and private-file locations: [deployment guide](DEPLOY_STREAMLIT.md).
 
 ## Production readiness
 
-Ready for local use and cloud configuration, **not yet verified live for clients**.
+Cloud data is migrated and verified, **not yet verified live for clients**.
 Community Cloud may sleep and free providers impose limits. A 1,000-lead target is
 not a guarantee across every niche/region, nor proof of mailbox deliverability.
 Discovery can repeat its last 30-second research batch after abrupt cloud shutdown;

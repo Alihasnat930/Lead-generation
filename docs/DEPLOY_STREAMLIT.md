@@ -6,6 +6,15 @@ sender and CRM. Provider credentials and user approvals are admin-only. It is no
 
 ## First deployment
 
+For this workspace, steps 1–3 were completed on 3 October 2026. Both migrations
+are applied and the cloud backups were restored and verified with 1,005 qualified
+leads. Do not bootstrap again. The app has been deployed at
+https://lead-generation-2dxsvsggteqbzggxfiu8qo.streamlit.app/ with `streamlit_app.py`,
+but currently shows the missing-auth-configuration screen. Complete the Secrets
+part of step 4 through **Manage app > Settings > Secrets**. The private secrets file
+is ready and includes the live URL. Supabase Auth redirects and custom signup SMTP
+are configured. The existing deployment reports Python 3.14; tests used 3.11.
+
 1. In your free Supabase project's SQL editor, run `supabase/schema.sql`, then
    `supabase/002_atomic_workspace.sql`. The second migration provides atomic leases
    and rejects stale checkpoint writers. RLS is enabled; no anonymous policies exist.
@@ -51,14 +60,17 @@ sender and CRM. Provider credentials and user approvals are admin-only. It is no
 - The deployed host must be able to reach Gmail SMTP 465 and IMAP 993. Local
   authentication passing does not prove connectivity from the hosted environment.
 - On a cloud storage/lease error, reboot the Streamlit app to restore current data.
-  Secrets live only on the server. Rotate the workspace password by changing its
-  hash and rebooting, then distribute the new password privately.
+  Secrets live only on the server. Account mode uses each member's own verified
+  login; manage membership under Settings. In legacy shared-password mode only,
+  rotate the password by changing its hash and rebooting.
 
 ## Optional GitHub Actions
 
 Schedules are gated off by default. Add repository secrets `SUPABASE_URL`,
 `SUPABASE_SERVICE_ROLE_KEY`, `GOOGLE_SHEET_ID`, `SERVICE_ACCOUNT_JSON`,
 `GMAIL_ADDRESS`, `GMAIL_APP_PASSWORD`. Set `DISCOVERY_JOB_ID` to a saved campaign.
+These six secrets are already configured for `Alihasnat930/Lead-generation`;
+`ENABLE_DISCOVERY_JOBS` and `ENABLE_OUTREACH_JOBS` are explicitly `false`.
 Set repository variable `ENABLE_DISCOVERY_JOBS=true` and/or
 `ENABLE_OUTREACH_JOBS=true` only after connection checks pass. Outreach also requires
 the app's saved **Enable daily automatic outreach** setting. Scheduling uses
