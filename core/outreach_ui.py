@@ -30,7 +30,7 @@ def render(discovery_store):
     st.title('Outreach & CRM')
     st.caption('This app uses its own Google Sheet. Local Python drafts and signatures require no paid AI API.')
     st.markdown(' | '.join(f'[{label}]({url})' for label,url in signature_links() if url.startswith('https://')))
-    sync_tab,email_tab,followup_tab,schedule_tab=st.tabs(['Sync & review','Send outreach','Follow-ups','Schedule & activity'])
+    sync_tab,email_tab,followup_tab,schedule_tab=st.tabs(['Sync & review','Send outreach','Follow-ups','Activity'])
     with sync_tab:
         a,b=st.columns(2)
         a.metric('Qualified leads in workspace',discovery_store.stats()['qualified'])
@@ -114,25 +114,7 @@ def render(discovery_store):
             except Exception as exc: error(exc)
         summary(store)
     with schedule_tab:
-        st.write(('The hosted service runs while the app is awake. Optional GitHub Actions handle sleeping periods. ' if config.CLOUD_MODE else 'The local service runs while this computer is awake. ')+
-                 'Sheet sync checks every five minutes. Automatic emails require the setting below.')
-        with st.form('outreach_schedule'):
-            auto_sync=st.checkbox('Automatically sync qualified leads to the app Sheet',value=prefs['auto_sync_enabled'])
-            auto_send=st.checkbox('Enable daily automatic outreach and due follow-ups',value=prefs['auto_send_enabled'])
-            when=st.time_input('Daily sending time — Asia/Karachi',value=daytime(prefs['hour'],prefs['minute']))
-            a,b,c=st.columns(3)
-            initial=a.number_input('Daily initial limit',0,20,prefs['initial_limit'])
-            follow=b.number_input('Daily follow-up limit',0,10,prefs['followup_limit'])
-            total=c.number_input('Daily combined limit',0,30,prefs['total_limit'])
-            score=st.slider('Scheduled minimum score',0,100,prefs['min_score'])
-            sig=st.text_input('Scheduled signature name',value=prefs['signature_name'])
-            if st.form_submit_button('Save schedule'):
-                try:
-                    store.save_settings({'auto_sync_enabled':auto_sync,'auto_send_enabled':auto_send,'hour':when.hour,
-                        'minute':when.minute,'initial_limit':initial,'followup_limit':follow,'total_limit':total,
-                        'min_score':score,'signature_name':sig})
-                    st.success('Schedule saved. Daily caps include previous runs and other Gmail activity.')
-                except Exception as exc: error(exc)
+        st.info('Configure timezone, weekdays, limits and automatic sending on the Schedule page in the sidebar.')
         heartbeat=store.get('scheduler_heartbeat',0)
         st.caption('Sync and scheduling service: '+('Running' if time.time()-heartbeat<120 else 'Not detected. Start it below.'))
         if st.button('Start sync and scheduling service'):

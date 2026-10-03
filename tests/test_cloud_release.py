@@ -97,7 +97,7 @@ class AuthTests(unittest.TestCase):
 
     def test_cloud_entrypoint_stops_before_data_without_password(self):
         from streamlit.testing.v1 import AppTest
-        with patch.object(config,'CLOUD_MODE',True), patch.object(config,'APP_LOGIN_PASSWORD_HASH',''), patch('core.store.Store') as store:
+        with patch.object(config,'APP_AUTH_MODE','legacy'), patch.object(config,'CLOUD_MODE',True), patch.object(config,'APP_LOGIN_PASSWORD_HASH',''), patch('core.store.Store') as store:
             app=AppTest.from_file(str(Path(__file__).resolve().parents[1]/'app.py'),default_timeout=30).run()
             self.assertEqual(len(app.exception),0)
             self.assertTrue(any('APP_LOGIN_PASSWORD_HASH' in e.value for e in app.error))
@@ -108,7 +108,7 @@ class AuthTests(unittest.TestCase):
         from core.store import Store
         with tempfile.TemporaryDirectory() as folder:
             store=Store(Path(folder)/'campaign.db')
-            with patch.object(config,'APP_LOGIN_PASSWORD_HASH',hash_app_password('fixture-password')), patch.object(config,'OUTREACH_DATABASE_PATH',str(Path(folder)/'outreach.db')), patch('core.store.Store',return_value=store):
+            with patch.object(config,'APP_AUTH_MODE','legacy'), patch.object(config,'APP_LOGIN_PASSWORD_HASH',hash_app_password('fixture-password')), patch.object(config,'OUTREACH_DATABASE_PATH',str(Path(folder)/'outreach.db')), patch('core.store.Store',return_value=store):
                 app=AppTest.from_file(str(Path(__file__).resolve().parents[1]/'app.py'),default_timeout=30).run()
                 self.assertEqual(len(app.sidebar.radio),0)
                 app.text_input[0].set_value('fixture-password')

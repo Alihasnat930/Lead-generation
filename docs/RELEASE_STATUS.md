@@ -2,6 +2,12 @@
 
 **Local release verified. Cloud release awaiting account configuration; no live client URL verified.**
 
+Latest update: GitHub CLI is authenticated as `Alihasnat930`. Account login/signup,
+approved email/Google access, Twilio and Meta WhatsApp settings, a consent-aware
+template queue and a dedicated Schedule page are implemented. The admin is
+`alihasnat.dev@gmail.com`. Supabase Auth is reachable with email confirmation enabled.
+See [accounts and channels](ACCOUNTS_AND_CHANNELS.md) for setup and remaining credentials.
+
 ## Fixed
 
 - Explicit-range Google Sheets sync, column-name updates and read-back verification.
@@ -14,8 +20,9 @@
   a maximum of three attempts; permanent rejections stop.
 - Local batch launcher starts the complete dashboard and sync/scheduling service.
   Local dashboard health returned HTTP 200; scheduler heartbeat verified.
-- Hosted login fails closed, uses a salted PBKDF2 password, throttles attempts, expires
-  sessions and offers logout. Full workspace controls are available after login.
+- Account mode uses verified Supabase email identities or native Google OIDC, plus a
+  separate admin approval check. Credentials and user approvals are admin-only.
+  Legacy shared-password mode retains salted PBKDF2, throttling and session expiry.
 - Consistent compressed SQLite backups include committed WAL data. Cloud owners
   use atomic database leases and fenced writes. Outreach checkpoints synchronously;
   a storage failure prevents further sends. Local sending is disabled after bootstrap.
@@ -40,22 +47,29 @@ SQLite copying and competing jobs overwriting the same snapshots.
   `.github/workflows`, `.gitignore`, `.env.example`, `requirements.txt`, docs.
 - Regression coverage: `tests/test_outreach.py`, `test_cloud_release.py`, updated
   Sheet/UI fixtures in `test_campaigns.py` and `test_ui.py`.
+- Accounts/channels: `core/accounts.py`, `login_ui.py`, `integrations.py`,
+  `settings_ui.py`, `messaging.py`, `messaging_ui.py`, `schedule_ui.py`;
+  tests in `test_account_ui.py` and `test_accounts_messaging_schedule.py`.
 
 ## Migrations
 
 Local SQLite adds `attempts`, `retry_at` and `retryable` to existing delivery tables
 without deleting data. Supabase needs `supabase/schema.sql`, followed by
 `supabase/002_atomic_workspace.sql`. These cloud migrations have **not** been run
-against the user's project because the required server key/management connection
-is not configured. Existing cloud data is never overwritten by bootstrap.
+against the user's project. The server key now connects, but the schema check reports
+missing tables (PGRST205); a database management connection or SQL Editor is needed
+to apply migrations. Existing cloud data is never overwritten by bootstrap.
 
 ## Test results
 
-- **74 automated tests passed** using isolated databases and mocked email delivery.
+- **94 automated tests passed** using isolated databases and mocked message delivery.
   Includes 1,000-target exact stopping/resume, deduplication, extraction and evidence
   rules, source cooldowns, Sheet preservation and verified writes, caps, suppression,
   reply stops, interrupted-send recovery, concurrency, retries, WAL backup restore,
   stale-owner rejection, password login/logout, missing-auth protection and UI pages.
+  New coverage checks member approval/revocation, admin-only settings, secret input
+  masking, verified Google identities, WhatsApp consent/dedup/caps/uncertain sends,
+  timezone/weekday scheduling, DST gaps and configurable sync intervals.
 - Python compilation, `pip check` and `git diff --check` passed.
 - Live Sheet read-back: 1,005 rows / 1,005 domains / zero missing qualified leads.
 - Gmail SMTP authentication and readonly IMAP checks passed locally. **No real
@@ -76,11 +90,13 @@ in user-facing connection errors.
 
 ## Remaining / manual configuration
 
-1. Configure **SUPABASE_SERVICE_ROLE_KEY** privately. The project URL is present;
-   an anonymous/publishable key is insufficient. Supabase plugin access is optional
-   for applying migrations and is not yet connected.
-2. Apply both SQL migrations, bootstrap the verified local data once, then regenerate
-   the private Streamlit secrets template.
+1. **SUPABASE_SERVICE_ROLE_KEY** is now configured in the private `.env`, mapped from
+   the new-format `sb_secret_*` key, together with `SUPABASE_ANON_KEY`
+   (`sb_publishable_*`) for account login. The secret key authenticates against the
+   project, but it cannot run DDL, so the SQL still has to be applied in the dashboard.
+2. Apply both SQL migrations in the Supabase SQL editor, bootstrap the verified local
+   data once (`scripts/push_cloud_state.py`), then regenerate the private Streamlit
+   secrets template (`scripts/prepare_release.py`).
 3. In Streamlit Community Cloud, deploy `Alihasnat930/Lead-generation`, `main`,
    **streamlit_app.py**, Python **3.11**, with those secrets.
 4. Verify deployed login, restored data, Sheet access and Gmail authentication.

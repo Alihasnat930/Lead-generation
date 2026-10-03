@@ -13,7 +13,10 @@ TZ = ZoneInfo("Asia/Karachi")
 DEFAULTS = {"enabled": False, "hour": 15, "minute": 0, "initial_limit": 20,
             "followup_limit": 10, "total_limit": 30, "min_score": 75,
             "signature_name": config.YOUR_NAME, "sender": "", "sheet_id": "",
-            "sheet_name": "Leads", "auto_sync_enabled": True, "auto_send_enabled": False}
+            "sheet_name": "Leads", "auto_sync_enabled": True, "auto_send_enabled": False,
+            "schedule_timezone":"Asia/Karachi", "schedule_weekdays":[0,1,2,3,4,5,6],
+            "sync_interval_minutes":5,"initial_enabled":True,"followup_enabled":True,
+            "auto_whatsapp_enabled":False,"whatsapp_daily_limit":10}
 COUNTED = ("prepared", "sending", "uncertain", "sent")
 
 
@@ -80,9 +83,25 @@ class OutreachStore:
     def save_settings(self, values):
         prefs = {**self.settings(), **values}
         for key, maximum in (("initial_limit", 20), ("followup_limit", 10), ("total_limit", 30),
-                             ("min_score", 100), ("hour", 23), ("minute", 59)):
+                             ("min_score", 100), ("hour", 23), ("minute", 59),
+                             ("whatsapp_daily_limit",30)):
             if type(prefs[key]) is not int or not 0 <= prefs[key] <= maximum:
                 raise ValueError(f"{key} must be between 0 and {maximum}.")
+        for key in ('auto_sync_enabled','auto_send_enabled','initial_enabled','followup_enabled','auto_whatsapp_enabled'):
+            if type(prefs[key]) is not bool:
+                raise ValueError(f'{key} must be true or false.')
+        interval=prefs['sync_interval_minutes']
+        if type(interval) is not int or not 1<=interval<=60:
+            raise ValueError('Sheet sync interval must be 1–60 minutes.')
+        days=prefs['schedule_weekdays']
+        if not isinstance(days,list) or any(type(day) is not int or day not in range(7) for day in days):
+            raise ValueError('Choose valid schedule weekdays.')
+        if (prefs['auto_send_enabled'] or prefs['auto_whatsapp_enabled']) and not days:
+            raise ValueError('Choose at least one sending day.')
+        try:
+            ZoneInfo(prefs['schedule_timezone'])
+        except (KeyError,ValueError,TypeError):
+            raise ValueError('Choose a valid IANA timezone.') from None
         prefs["signature_name"] = str(prefs["signature_name"]).strip()[:100]
         if not prefs["signature_name"]:
             raise ValueError("Enter a signature name.")

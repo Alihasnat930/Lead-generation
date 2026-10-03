@@ -132,6 +132,11 @@ The old placeholder file and duplicate dotenv file are archived in `.backups/bef
 
 ## Cloud deployment status
 
+The app includes **login/signup**, admin-approved Google/email access, **Twilio and
+Meta WhatsApp settings**, an opted-in template queue, and a dedicated **Schedule**
+page. See [accounts and channels](docs/ACCOUNTS_AND_CHANNELS.md) for setup, controls,
+provider limits and the distinction between message acceptance and delivery.
+
 Deploy **`streamlit_app.py`**, Python **3.11**, on Streamlit Community Cloud. Follow
 [`docs/DEPLOY_STREAMLIT.md`](docs/DEPLOY_STREAMLIT.md) for the two Supabase migrations,
 private secrets, database bootstrap and client login. `scripts/prepare_release.py`

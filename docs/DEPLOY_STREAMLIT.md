@@ -1,8 +1,8 @@
 # Free client deployment
 
-This is one shared, password-protected workspace. Every signed-in client can run
+This is one shared workspace protected by verified accounts and admin approval. Every approved client can run
 campaigns, export leads, change settings and control outreach using the configured
-sender and CRM. It is not a separate database/account for each customer.
+sender and CRM. Provider credentials and user approvals are admin-only. It is not a separate database/account for each customer.
 
 ## First deployment
 
@@ -25,12 +25,16 @@ sender and CRM. It is not a separate database/account for each customer.
    `Alihasnat930/Lead-generation`, branch `main`, main file **`streamlit_app.py`**.
    In Advanced settings choose Python **3.11**, then paste the contents of the private
    `data/deployment/streamlit-secrets.toml` into Secrets. Do not commit that file.
-5. Open the resulting URL. Sign in with `data/deployment/client-password.txt`.
+5. Open the resulting URL. With `APP_AUTH_MODE=accounts`, create/verify an account
+   for the address in `APP_ADMIN_EMAILS`, then sign in with that Supabase password.
+   Set Supabase Auth's Site URL/allowed redirects and `APP_PUBLIC_URL` to the live URL.
+   The generated shared password is used only in legacy password mode.
    Use **Check Gmail authentication and Sheet access**; it sends no email. Confirm
    1,005 qualified leads are restored and **Sync qualified leads** verifies the CRM.
-   Share the app URL and password with the intended client through your own channel.
-6. Automatic email is initially disabled. Enable it only when you intend real
-   outreach. Manual send buttons are available to signed-in workspace users.
+   Approve the intended client's verified email under Settings, then share the URL.
+6. Automatic email and WhatsApp are initially disabled. Configure the dedicated
+   Schedule page when you intend real outreach. Manual send buttons are available
+   to approved workspace users. See [accounts and channels](ACCOUNTS_AND_CHANNELS.md).
 
 ## Runtime and limits
 

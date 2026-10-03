@@ -137,7 +137,7 @@ def serve(port, no_browser):
                              stdout=log, stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL,
                              creationflags=getattr(subprocess,'CREATE_NO_WINDOW',0) if os.name=='nt' else 0,
                              start_new_session=os.name!='nt')
-            say('Sheet sync service started. Automatic emails run only when enabled in Outreach & CRM.')
+            say('Sync service started. Configure automatic email and WhatsApp sending on the Schedule page.')
             say("Keep this window open. Ctrl+C stops the dashboard; pause campaigns in the app first if needed.")
             if not no_browser:
                 webbrowser.open(url)

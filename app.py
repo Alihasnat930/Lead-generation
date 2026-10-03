@@ -13,12 +13,32 @@ from core.supabase_client import check_schema as check_supabase_schema
 from core.store import Store
 
 st.set_page_config(page_title="Prospect Studio", page_icon="\u25ce", layout="wide", initial_sidebar_state="expanded")
-if config.CLOUD_MODE and not config.APP_LOGIN_PASSWORD_HASH:
+identity=None
+workspace_role='member'
+if config.APP_AUTH_MODE=='accounts':
+    from core.login_ui import require_identity, require_access
+    from core.integrations import sync_google_secrets
+    if config.CLOUD_MODE:
+        from core.cloud_runtime import start_cloud_runtime
+        try:
+            start_cloud_runtime()
+        except Exception as exc:
+            st.error(str(exc) if isinstance(exc,ValueError) else 'Configure Supabase server storage and apply the cloud migrations before opening this workspace.')
+            st.stop()
+    account_store=OutreachStore()
+    try:
+        sync_google_secrets(account_store)
+    except Exception:
+        st.warning('Google sign-in configuration needs attention. Email sign-in remains available.')
+    identity=require_identity()
+    workspace_role=require_access(identity,account_store)
+    st.session_state['workspace_identity']=identity
+elif config.CLOUD_MODE and not config.APP_LOGIN_PASSWORD_HASH:
     st.error('Deployment setup required: configure APP_LOGIN_PASSWORD_HASH in Streamlit Secrets before opening this workspace.')
     st.stop()
-if st.session_state.get('authenticated') and time.time()-st.session_state.get('authenticated_at',0)>8*3600:
+if config.APP_AUTH_MODE!='accounts' and st.session_state.get('authenticated') and time.time()-st.session_state.get('authenticated_at',0)>8*3600:
     st.session_state['authenticated']=False
-if config.APP_LOGIN_PASSWORD_HASH and not st.session_state.get("authenticated"):
+if config.APP_AUTH_MODE!='accounts' and config.APP_LOGIN_PASSWORD_HASH and not st.session_state.get("authenticated"):
     st.title("Prospect Studio")
     st.subheader("Private dashboard")
     password = st.text_input("Password", type="password", key='login_password')
@@ -67,6 +87,10 @@ h1,h2,h3 {font-family: 'Manrope', sans-serif !important; letter-spacing:-.035em;
 
 store = Store()
 outreach_store = OutreachStore()
+if identity is None:
+    from core.accounts import admins
+    owner=next(iter(sorted(admins())),config.GMAIL_ADDRESS)
+    identity={'email':owner,'subject':'legacy-local-owner','provider':'legacy','verified':True}
 if config.CLOUD_MODE:
     @st.cache_resource
     def start_hosted_services():
@@ -78,13 +102,18 @@ with st.sidebar:
     st.markdown('<div class="brand"><span>&#9678;</span> Prospect Studio</div>', unsafe_allow_html=True)
     st.caption("BUSINESS DISCOVERY WORKSPACE")
     st.divider()
-    page = st.radio("Workspace", ["Campaigns", "Lead database", "Outreach & CRM", "Settings"], label_visibility="collapsed")
+    page = st.radio("Workspace", ["Campaigns", "Lead database", "Outreach & CRM", "WhatsApp outreach", "Schedule", "Settings"], label_visibility="collapsed")
     st.divider()
     st.markdown("**Your markets**")
     st.caption("United States \u00b7 United Kingdom \u00b7 European Union")
     st.markdown("**Your workspace**")
     st.caption(("Cloud backups" if config.CLOUD_MODE else "Local storage")+" \u00b7 Persistent jobs \u00b7 Source evidence")
-    if config.APP_LOGIN_PASSWORD_HASH and st.button('Sign out'):
+    if config.APP_AUTH_MODE=='accounts':
+        st.caption(identity['email']+' · '+workspace_role)
+    if (config.APP_LOGIN_PASSWORD_HASH or config.APP_AUTH_MODE=='accounts') and st.button('Sign out'):
+        if config.APP_AUTH_MODE=='accounts':
+            from core.login_ui import logout
+            logout()
         st.session_state.clear()
         st.rerun()
     st.divider()
@@ -329,6 +358,8 @@ elif page == "Settings":
     st.markdown('<div class="eyebrow">WORKSPACE CONNECTIONS</div>', unsafe_allow_html=True)
     st.title("Settings")
     st.write("Discovery and qualification work without API keys. Your existing Google Sheets and outreach connections are separate.")
+    from core.settings_ui import render as render_settings
+    render_settings(outreach_store,identity)
     with st.container(border=True):
         st.subheader("Free discovery engine")
         st.success("Ready. No search or model subscription is required.")
@@ -364,3 +395,11 @@ elif page == "Settings":
 elif page == "Outreach & CRM":
     from core.outreach_ui import render
     render(store)
+
+elif page == 'Schedule':
+    from core.schedule_ui import render as render_schedule
+    render_schedule(outreach_store)
+
+elif page == 'WhatsApp outreach':
+    from core.messaging_ui import render as render_messaging
+    render_messaging(outreach_store)

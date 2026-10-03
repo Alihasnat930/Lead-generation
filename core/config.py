@@ -13,7 +13,27 @@ class Config:
     CLOUD_MODE = os.getenv("APP_ENV", "local").lower() == "production"
     APP_LOGIN_PASSWORD_HASH = os.getenv("APP_LOGIN_PASSWORD_HASH", "")
     SUPABASE_URL = os.getenv("SUPABASE_URL", "")
-    SUPABASE_SERVICE_ROLE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY", "")
+    # New API key methods are preferred (secret + publishable); legacy JWT-style
+    # names (service_role/anon) are still read for backward compatibility.
+    SUPABASE_SERVICE_ROLE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY") or os.getenv("SUPABASE_SECRET_KEY", "")
+    SUPABASE_ANON_KEY = (os.getenv('SUPABASE_ANON_KEY') or os.getenv('SUPABASE_PUBLISHABLE_KEY')
+                         or os.getenv('SUPABASE_KEY', ''))
+    APP_AUTH_MODE = os.getenv('APP_AUTH_MODE','legacy')
+    APP_ADMIN_EMAILS = os.getenv('APP_ADMIN_EMAILS',os.getenv('GMAIL_ADDRESS',''))
+    APP_PUBLIC_URL = os.getenv('APP_PUBLIC_URL','http://localhost:8501')
+    GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID','')
+    GOOGLE_CLIENT_SECRET = os.getenv('GOOGLE_CLIENT_SECRET','')
+    GOOGLE_REDIRECT_URI = os.getenv('GOOGLE_REDIRECT_URI','http://localhost:8501/oauth2callback')
+    AUTH_COOKIE_SECRET = os.getenv('AUTH_COOKIE_SECRET','')
+    TWILIO_ACCOUNT_SID = os.getenv('TWILIO_ACCOUNT_SID','')
+    TWILIO_AUTH_TOKEN = os.getenv('TWILIO_AUTH_TOKEN','')
+    TWILIO_WHATSAPP_FROM = os.getenv('TWILIO_WHATSAPP_FROM','')
+    TWILIO_CONTENT_SID = os.getenv('TWILIO_CONTENT_SID','')
+    WHATSAPP_ACCESS_TOKEN = os.getenv('WHATSAPP_ACCESS_TOKEN','')
+    WHATSAPP_PHONE_NUMBER_ID = os.getenv('WHATSAPP_PHONE_NUMBER_ID','')
+    WHATSAPP_API_VERSION = os.getenv('WHATSAPP_API_VERSION','v23.0')
+    WHATSAPP_TEMPLATE_NAME = os.getenv('WHATSAPP_TEMPLATE_NAME','')
+    WHATSAPP_TEMPLATE_LANGUAGE = os.getenv('WHATSAPP_TEMPLATE_LANGUAGE','en_US')
     # Google
     GOOGLE_SHEET_ID = os.getenv("GOOGLE_SHEET_ID", "")
     SERVICE_ACCOUNT_FILE = str(BASE_DIR / os.getenv("SERVICE_ACCOUNT_FILE", "credentials/service_account.json"))
