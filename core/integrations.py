@@ -11,7 +11,8 @@ from .local_lock import LocalLock
 FIELDS=('GOOGLE_CLIENT_ID','GOOGLE_CLIENT_SECRET','GOOGLE_REDIRECT_URI','AUTH_COOKIE_SECRET',
         'TWILIO_ACCOUNT_SID','TWILIO_AUTH_TOKEN','TWILIO_WHATSAPP_FROM','TWILIO_CONTENT_SID',
         'WHATSAPP_ACCESS_TOKEN','WHATSAPP_PHONE_NUMBER_ID','WHATSAPP_API_VERSION',
-        'WHATSAPP_TEMPLATE_NAME','WHATSAPP_TEMPLATE_LANGUAGE')
+        'WHATSAPP_TEMPLATE_NAME','WHATSAPP_TEMPLATE_LANGUAGE',
+        'DISCORD_BOT_TOKEN','DISCORD_RESEARCH_CHANNELS')
 
 
 def load(store):
@@ -24,6 +25,9 @@ def save(actor,values,store):
     if set(values)-set(FIELDS):
         raise ValueError('Unsupported integration setting.')
     changes={key:str(value).strip() for key,value in values.items() if str(value).strip()}
+    if 'DISCORD_RESEARCH_CHANNELS' in values:
+        from .social_discord import channel_ids
+        changes['DISCORD_RESEARCH_CHANNELS'] = ','.join(channel_ids(values['DISCORD_RESEARCH_CHANNELS']))
     if any('\n' in v or '\r' in v for v in changes.values()):
         raise ValueError('Integration values must be on one line.')
     for key,prefix in (('TWILIO_ACCOUNT_SID','AC'),('TWILIO_CONTENT_SID','HX')):

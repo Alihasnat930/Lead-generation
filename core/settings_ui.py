@@ -8,7 +8,7 @@ def render(store,identity):
     if accounts.role_for(identity,store)!='admin':
         st.info('API credentials and user approvals are managed by the workspace admin.')
         return
-    access,google,twilio,whatsapp,backend=st.tabs(['User access','Google sign-in','Twilio','WhatsApp Cloud API','Supabase'])
+    access,google,twilio,whatsapp,social,backend=st.tabs(['User access','Google sign-in','Twilio','WhatsApp Cloud API','Social sources','Supabase'])
     values=integrations.load(store)
     with access:
         st.write('Admin: '+', '.join(sorted(accounts.admins())))
@@ -63,6 +63,28 @@ def render(store,identity):
                     check_authentication(provider,integrations.load(store))
                     st.success('Provider authenticated. No message sent.')
                 except Exception as exc: st.error(str(exc) if isinstance(exc,ValueError) else 'Provider authentication failed.')
+    with social:
+        st.write('Public-post discovery uses Bing and the open-source DDGS adapter without API keys.')
+        st.caption('For Discord, add a bot to a server you manage or have permission to monitor. Enable Message Content intent and grant View Channel / Read Message History for the chosen channels.')
+        with st.form('discord_research_settings'):
+            token=st.text_input('Discord bot token',type='password',key='setting_DISCORD_BOT_TOKEN',help='Leave blank to keep the saved token.')
+            channels=st.text_input('Allowed Discord channel IDs (comma-separated)',value=values['DISCORD_RESEARCH_CHANNELS'])
+            if st.form_submit_button('Save Discord research settings'):
+                try:
+                    integrations.save(identity,{'DISCORD_BOT_TOKEN':token,'DISCORD_RESEARCH_CHANNELS':channels},store)
+                    st.session_state.pop('setting_DISCORD_BOT_TOKEN',None)
+                    st.success('Discord settings saved.')
+                except (ValueError,PermissionError) as exc: st.error(str(exc))
+        if st.button('Check Discord bot authentication'):
+            try:
+                from .social_discord import check_bot
+                check_bot(integrations.load(store))
+                st.success('Bot authenticated. No messages sent.')
+            except Exception as exc:
+                from .providers import ProviderError
+                st.error(str(exc) if isinstance(exc,(ValueError,ProviderError)) else 'Discord authentication could not be checked.')
+        st.markdown('[Discord Developer Portal](https://discord.com/developers/applications) · [discord.py](https://github.com/Rapptz/discord.py) · [PRAW](https://github.com/praw-dev/praw)')
+        st.caption('Direct Reddit API collection is not enabled in this release; commercial API access requires Reddit approval. Facebook results are indexed public post links or imported exports, not access to closed groups.')
     with backend:
         st.write('Supabase URL: '+('Configured' if config.SUPABASE_URL else 'Missing'))
         st.write('User authentication key: '+('Configured' if config.SUPABASE_ANON_KEY else 'Missing'))

@@ -2,6 +2,12 @@
 
 A local lead-research workspace for AI automation and web-development services. Discover businesses, check public contact pages, qualify against observed evidence, and save resumable campaigns to SQLite.
 
+The **Social research** page also supports academic-support research across Reddit,
+Facebook and permitted Discord server channels. It saves post-level source evidence,
+review decisions and CSV exports separately from business leads and outreach.
+See [social research](docs/SOCIAL_RESEARCH.md) for the implemented collection paths,
+Discord setup, free-search limits and import formats.
+
 ## Start
 
 Double-click **`run_app.bat` in the main project folder**. It works from any current directory, including paths containing spaces. Python **3.11 or newer** must already be installed; the launcher prefers Python 3.11 when creating an environment.

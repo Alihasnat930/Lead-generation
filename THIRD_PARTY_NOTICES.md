@@ -7,3 +7,16 @@
 - **SearXNG** — [searxng/searxng](https://github.com/searxng/searxng), AGPL-3.0. Evaluated as a self-hosted search alternative; not bundled or required.
 
 Business-site content remains attributable to the respective websites. Source URLs accompany every observed contact. No claims of data accuracy, deliverability or completeness are implied by these licenses.
+
+## Social research
+
+DDGS is also used for public social-post discovery. The following repositories were
+evaluated on 6 October 2026; their code is not vendored or installed by this module:
+
+- [PRAW](https://github.com/praw-dev/praw), BSD-2-Clause: optional future Reddit API integration, subject to platform access.
+- [discord.py](https://github.com/Rapptz/discord.py), MIT: SDK reference; this release calls Discord's documented HTTP API directly with a bot token.
+- [facebook-scraper](https://github.com/kevinzg/facebook-scraper), MIT: evaluated but not adopted; repository last push reported June 2024.
+- [DiscordChatExporter](https://github.com/Tyrrrz/DiscordChatExporter), MIT: compatible server-channel JSON import format; exporter not bundled.
+
+Platform content retains its original ownership. Public search excerpts are research
+hints with source links, not a license to reuse an entire discussion or contact its members.

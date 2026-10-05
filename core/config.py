@@ -56,6 +56,8 @@ class Config:
 
     # Discord notifications (optional)
     DISCORD_WEBHOOK_URL = os.getenv("DISCORD_WEBHOOK_URL", "")
+    DISCORD_BOT_TOKEN = os.getenv('DISCORD_BOT_TOKEN', '')
+    DISCORD_RESEARCH_CHANNELS = os.getenv('DISCORD_RESEARCH_CHANNELS', '')
 
     # Signature
     YOUR_NAME = os.getenv("YOUR_NAME", "Ali")

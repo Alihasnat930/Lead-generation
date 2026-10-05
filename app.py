@@ -102,7 +102,7 @@ with st.sidebar:
     st.markdown('<div class="brand"><span>&#9678;</span> Prospect Studio</div>', unsafe_allow_html=True)
     st.caption("BUSINESS DISCOVERY WORKSPACE")
     st.divider()
-    page = st.radio("Workspace", ["Campaigns", "Lead database", "Outreach & CRM", "WhatsApp outreach", "Schedule", "Settings"], label_visibility="collapsed")
+    page = st.radio("Workspace", ["Campaigns", "Lead database", "Social research", "Outreach & CRM", "WhatsApp outreach", "Schedule", "Settings"], label_visibility="collapsed")
     st.divider()
     st.markdown("**Your markets**")
     st.caption("United States \u00b7 United Kingdom \u00b7 European Union")
@@ -403,3 +403,7 @@ elif page == 'Schedule':
 elif page == 'WhatsApp outreach':
     from core.messaging_ui import render as render_messaging
     render_messaging(outreach_store)
+
+elif page == 'Social research':
+    from core.social_ui import render as render_social
+    render_social(store,outreach_store)
