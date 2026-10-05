@@ -1,12 +1,20 @@
-# Client release status — 3 October 2026
+# Client release status — 6 October 2026
 
-**Streamlit deployment responds, but client access is blocked until its private secrets are saved.**
+**Live administrator login and the Social research page are verified.**
 
 App: https://lead-generation-2dxsvsggteqbzggxfiu8qo.streamlit.app/
-The hosted health endpoint returns `200 ok`. A live Streamlit session renders the
-missing-auth-configuration message, so health alone is not a successful app check.
+The hosted health endpoint returns `200 ok`. Private secrets are loaded, and a
+normal administrator login successfully opened the Social research form.
 The deployed entrypoint is `streamlit_app.py` on `main`; the host reports Python
-3.14 and Streamlit 1.65.0. Automated release tests ran on Python 3.11.
+3.14 and Streamlit 1.65.0. Automated release tests ran on Python 3.11. The app was
+resumed from shutdown during verification. No campaign or message was triggered.
+
+The new [Social research module](SOCIAL_RESEARCH.md) provides academic-support
+topics, UK/US evidence, indexed Reddit/Facebook post discovery, configured Discord
+bot channels, imports, review and CSV export. These records stay separate from the
+business CRM and outbound queues. Facebook's live probe was unavailable; Discord
+still needs bot credentials and channel IDs. The target is research posts, not
+verified student customers.
 
 Latest update: GitHub CLI is authenticated as `Alihasnat930`. Account login/signup,
 approved email/Google access, Twilio and Meta WhatsApp settings, a consent-aware
@@ -76,7 +84,7 @@ not be overwritten.
 
 ## Test results
 
-- **94 automated tests passed** using isolated databases and mocked message delivery.
+- **110 automated tests passed** using isolated databases and mocked message delivery.
   Includes 1,000-target exact stopping/resume, deduplication, extraction and evidence
   rules, source cooldowns, Sheet preservation and verified writes, caps, suppression,
   reply stops, interrupted-send recovery, concurrency, retries, WAL backup restore,
@@ -94,7 +102,7 @@ not be overwritten.
   renewal, invalid-owner rejection, fenced snapshot writes and backup restore.
   Anonymous table reads expose no rows and anonymous lease RPC calls are denied.
   Hosted SMTP/IMAP and client access still need verification on the deployed host.
-- GitHub's Linux CI passed for code release `c7bd008`. The real local configuration
+- GitHub's Linux CI passed for code release `3c0bf3f`. The real local configuration
   renders login/signup with no exception and hides the workspace before login.
 - Production-mode AppTest restored the real cloud backup into temporary databases,
   confirmed 1,005 qualified leads and rendered account login/signup successfully.
@@ -111,14 +119,11 @@ in user-facing connection errors.
 
 ## Remaining / manual configuration
 
-1. Open the live app's **Manage app > Settings > Secrets** and paste the complete
-   private `data/deployment/streamlit-secrets.toml`, then save. The hosted session
-   currently shows `configure APP_LOGIN_PASSWORD_HASH` because the prepared account
-   configuration is absent. GitHub Actions secrets do not populate Streamlit Secrets.
-   This session has no authenticated Streamlit management/browser capability.
-2. Create and verify the admin account, then approve intended
+1. Configure a Discord bot and allowed channels under **Settings > Social sources**
+   for direct Discord research. No client-specific communities were supplied.
+2. The configured administrator account exists and its login works. Approve intended
    client accounts. Google OAuth, Twilio and Meta credentials remain unconfigured.
-3. Verify deployed login, restored data, Sheet access and Gmail authentication.
+3. Verify Sheet access and Gmail authentication from the hosted app before outreach.
    Share the resulting URL only after those checks pass. Real delivery can
    be checked later with explicit authorization; current authorization is auth only.
 
@@ -126,7 +131,8 @@ Exact commands and private-file locations: [deployment guide](DEPLOY_STREAMLIT.m
 
 ## Production readiness
 
-Cloud data is migrated and verified, **not yet verified live for clients**.
+Cloud data is migrated; hosted admin login and Social research rendering are verified.
+Actual client account access and hosted message transport remain separate checks.
 Community Cloud may sleep and free providers impose limits. A 1,000-lead target is
 not a guarantee across every niche/region, nor proof of mailbox deliverability.
 Discovery can repeat its last 30-second research batch after abrupt cloud shutdown;

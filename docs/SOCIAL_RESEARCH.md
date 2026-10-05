@@ -96,6 +96,9 @@ This was a bounded adapter check, not a qualified-lead or volume validation.
 The Facebook DDGS probe reported source unavailability, so live Facebook discovery
 has not been verified. No Discord bot credentials were available for a live test.
 The complete Python suite passed **110 tests**, including 16 new social checks.
+GitHub's Linux CI passed for release `3c0bf3f`. The live Streamlit app was resumed
+and its Social research form was verified through the normal administrator login.
+No research campaign was created and no message was sent during that hosted check.
 
 No client-selected communities or Discord bot credentials were available during
 implementation. Live platform access and usable volume depend on those sources;
