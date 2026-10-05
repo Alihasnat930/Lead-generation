@@ -8,13 +8,23 @@ from urllib.parse import parse_qs, urlsplit
 
 PLATFORMS = ('Reddit', 'Facebook', 'Discord')
 SERVICES = {
+    'Assignment support': ('assignment', 'assignments'),
+    'Thesis & dissertation support': ('thesis', 'theses', 'dissertation', 'dissertations'),
+    'Quiz preparation': ('quiz', 'quizzes', 'practice quiz', 'practice quizzes'),
+    'Homework & coursework': ('homework', 'coursework', 'course work'),
+    'Essay & report support': ('essay', 'essays', 'academic report', 'academic reports', 'lab report', 'lab reports'),
+    'Exam preparation': ('exam', 'exams', 'examination', 'examinations', 'exam revision', 'practice test', 'practice tests', 'test preparation'),
     'Proofreading': ('proofread', 'proofreading', 'proofreader'),
     'Thesis editing': ('thesis', 'dissertation', 'academic editing'),
     'Writing tutoring': ('writing tutor', 'writing help', 'essay feedback', 'assignment help'),
     'Research guidance': ('research proposal', 'research methods', 'methodology', 'literature review'),
     'Referencing': ('referencing', 'citation', 'bibliography', 'harvard referencing', 'apa style'),
 }
-ACADEMIC = re.compile(r'\b(thesis|theses|dissertation|assignment|essay|university|undergraduate|postgraduate|academic|phd|research proposal|literature review)\b', re.I)
+DEFAULT_TOPICS = ('Assignment support', 'Thesis & dissertation support', 'Quiz preparation', 'Homework & coursework')
+ACADEMIC = re.compile(
+    r'\b(thesis|theses|dissertations?|assignments?|essays?|quizzes|quiz|homework|course\s?work|'
+    r'exams?|examinations?|practice tests?|test preparation|lab reports?|university|undergraduate|'
+    r'postgraduate|academic|phd|research proposal|literature review)\b', re.I)
 REQUEST = re.compile(r'\b(looking for|need(?:ing)?|seeking|can anyone|could anyone|recommend|help me|struggling|looking to hire)\b', re.I)
 ADVERT = re.compile(r'\b(we offer|our services|hire me|dm me|contact us|guaranteed grades|assignment writing service|essay writing service)\b', re.I)
 MARKETS = {

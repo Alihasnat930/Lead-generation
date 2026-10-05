@@ -46,8 +46,16 @@ member export or automatic messaging is implemented.
 ## Research workflow
 
 Choose platforms, UK/US search markets, topics and up to eight extra phrases.
-Presets cover proofreading, thesis editing, writing tutoring, research guidance
-and referencing. Search geography is never treated as a person's location.
+New runs default to **Assignment support**, **Thesis & dissertation support**,
+**Quiz preparation** and **Homework & coursework**. Additional presets cover
+essays and academic/lab reports, exam preparation, proofreading, thesis editing,
+writing tutoring, research guidance and referencing. Common singular/plural
+wording is recognized, including assignments, theses, dissertations and quizzes.
+Searches include the topic's alternative wording. Extra phrases such as
+`statistics assignment` or `biology quiz` add searches and can match alongside
+the selected topics; they are not required conditions for every result.
+Existing saved runs keep their original topics and queries; create a new run to
+use the expanded defaults. Search geography is never treated as a person's location.
 UK curriculum, Harvard, APA and other textual mentions are shown as evidence,
 not as proof of a particular curriculum or institution.
 

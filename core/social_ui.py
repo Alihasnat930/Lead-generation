@@ -5,7 +5,7 @@ import pandas as pd
 import streamlit as st
 from . import integrations
 from .social_discord import channel_ids
-from .social_research import PLATFORMS, SERVICES, import_records, export_records
+from .social_research import PLATFORMS, SERVICES, DEFAULT_TOPICS, import_records, export_records
 from .social_sources import plan_queries
 from .social_store import SocialStore
 from .social_worker import launch
@@ -14,15 +14,15 @@ from .social_worker import launch
 def render(business_store, outreach_store):
     store = SocialStore(business_store.path)
     st.title('Social research')
-    st.write('Find posts about academic support, save their evidence and review potential opportunities.')
+    st.write('Find posts about assignments, theses, quizzes and other academic support, then review potential opportunities.')
     st.caption('A post mentioning the UK or US does not verify its author’s location, age or buying intent. Search excerpts may be incomplete or outdated.')
     with st.expander('Create a research run',expanded=not store.jobs()):
         with st.form('social_create'):
             name=st.text_input('Research name',value='US / UK academic support')
             platforms=st.multiselect('Platforms',list(PLATFORMS),default=['Reddit','Facebook'])
             markets=st.multiselect('Markets',['UK','US'],default=['UK','US'])
-            services=st.multiselect('Topics',list(SERVICES),default=['Proofreading','Thesis editing','Writing tutoring'])
-            keywords=st.text_area('Extra phrases (one per line, up to eight)',placeholder='dissertation feedback\nresearch proposal')
+            services=st.multiselect('Topics',list(SERVICES),default=list(DEFAULT_TOPICS))
+            keywords=st.text_area('Extra phrases (one per line, up to eight)',placeholder='statistics assignment\nbiology quiz\ndissertation feedback')
             a,b,c=st.columns(3)
             target=a.number_input('Research-record target',1,5000,1000)
             requests=b.number_input('Search request allowance',1,200,200)

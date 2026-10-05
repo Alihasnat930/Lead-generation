@@ -10,7 +10,7 @@ from core import integrations
 from core.outreach_store import OutreachStore
 from core.providers import ProviderError, SearchPage
 from core.social_discord import collect, channel_ids
-from core.social_research import source_url, normalize_record, import_records, export_records
+from core.social_research import DEFAULT_TOPICS, source_url, normalize_record, import_records, export_records, validate_settings
 from core.social_sources import plan_queries, search
 from core.social_store import SocialStore
 from core.social_worker import run
@@ -27,6 +27,41 @@ def post(number=1, **changes):
 
 
 class EvidenceTests(unittest.TestCase):
+    def test_assignment_thesis_and_quiz_requests_match_without_university_keyword(self):
+        examples = [
+            ('Assignment support', 'Need feedback on my assignments in the UK.'),
+            ('Thesis & dissertation support', 'Looking for an editor for our theses in the UK.'),
+            ('Thesis & dissertation support', 'Need help reviewing dissertations in the UK.'),
+            ('Quiz preparation', 'Need a tutor to help prepare for biology quizzes in the UK.'),
+            ('Quiz preparation', 'Can anyone explain the concepts for my next quiz?'),
+            ('Homework & coursework', 'Struggling with my homework, can anyone explain this?'),
+            ('Homework & coursework', 'Need feedback on my course work in the UK.'),
+            ('Essay & report support', 'Need feedback on lab reports in the UK.'),
+            ('Essay & report support', 'Looking for a tutor to review my essays.'),
+            ('Exam preparation', 'Need help preparing for exams in the UK.'),
+            ('Exam preparation', 'Looking for a tutor to explain these practice tests.'),
+        ]
+        for topic, text in examples:
+            with self.subTest(topic=topic, text=text):
+                result = normalize_record({'url':post()['url'], 'text':text}, settings(services=[topic]))
+                self.assertTrue(result['relevant'])
+                self.assertEqual(result['intent'], 'Possible request')
+                self.assertEqual(result['services'], [topic])
+        # Previously saved topic selections remain valid.
+        self.assertEqual(validate_settings(settings())['services'], ['Proofreading', 'Thesis editing'])
+
+    def test_new_topics_do_not_import_unselected_topics_or_generic_software_tests(self):
+        rows = [
+            {'url':post(1)['url'], 'text':'Need a tutor for chemistry quizzes in the UK.'},
+            {'url':post(2)['url'], 'text':'Need help with my thesis in the UK.'},
+            {'url':post(3)['url'], 'text':'Need help with our software tests in the UK.'},
+        ]
+        result, skipped = import_records(json.dumps(rows).encode(), 'posts.json', settings(services=['Quiz preparation']))
+        self.assertEqual((len(result), skipped), (1, 2))
+        self.assertEqual(result[0]['url'], post(1)['url'])
+        software = normalize_record(rows[2], settings(services=['Exam preparation']))
+        self.assertFalse(software['relevant'])
+
     def test_normalization_removes_trackers_and_rejects_nonposts_and_private_messages(self):
         self.assertEqual(source_url('https://old.reddit.com/r/GradSchool/comments/abc/title/?utm_source=test'),
                          ('Reddit','https://www.reddit.com/r/gradschool/comments/abc/'))
@@ -154,6 +189,16 @@ class PersistenceTests(unittest.TestCase):
 
 
 class ConnectorTests(unittest.TestCase):
+    def test_default_searches_cover_dissertations_quizzes_and_coursework(self):
+        queries = plan_queries(settings(services=list(DEFAULT_TOPICS)))
+        for platform in ('Reddit', 'Facebook'):
+            for market in ('UK', 'US'):
+                for engine in ('duckduckgo', 'bing'):
+                    selected = [q['query'] for q in queries if (q['platform'], q['market'], q['engine']) == (platform, market, engine)]
+                    self.assertEqual(len(selected), len(DEFAULT_TOPICS))
+                    for term in ('assignments', 'thesis', 'dissertation', 'quizzes', 'homework', 'coursework'):
+                        self.assertTrue(any('"'+term+'"' in q for q in selected), term)
+
     def test_ddgs_keeps_only_selected_platform_post_links(self):
         client=Mock()
         client.__enter__=Mock(return_value=client)
@@ -201,6 +246,7 @@ class SocialUITests(unittest.TestCase):
             self.assertEqual(len(app.exception),0)
             store=SocialStore()
             self.assertEqual(len(store.jobs()),1)
+            self.assertEqual(store.job(store.jobs()[0]['id'])['settings']['services'],list(DEFAULT_TOPICS))
             self.assertEqual(store.base.stats()['processed'],0)
             store.save_records(store.jobs()[0]['id'],[post()])
             app.run()

@@ -8,10 +8,15 @@ from .websites import decode_bing_url, is_challenge
 
 
 def plan_queries(settings, discord_channels=None):
-    terms = [SERVICES[name][0] for name in settings['services']] + settings.get('keywords', [])
+    # Search each topic's alternatives as well as recognizing them in returned text.
+    groups = [SERVICES[name] for name in settings['services']]
+    groups += [(term,) for term in settings.get('keywords', [])]
+    terms = []
+    for group in groups:
+        quoted = ['"' + term.replace('"', ' ').strip() + '"' for term in dict.fromkeys(group)]
+        terms.append(quoted[0] if len(quoted)==1 else '(' + ' OR '.join(quoted) + ')')
     queries = []
     for term in dict.fromkeys(terms):
-        term = term.replace('"', ' ')
         for market in settings['markets']:
             location = '(UK OR "United Kingdom")' if market=='UK' else '(USA OR "United States")'
             for platform in settings['platforms']:
@@ -20,7 +25,7 @@ def plan_queries(settings, discord_channels=None):
                 domain = 'reddit.com/r/' if platform=='Reddit' else 'facebook.com'
                 for engine in ('duckduckgo', 'bing'):
                     queries.append({'engine':engine,'platform':platform,'market':market,
-                                    'query':f'site:{domain} "{term}" {location} ("need" OR "looking for" OR "help")'})
+                                    'query':f'site:{domain} {term} {location} ("need" OR "looking for" OR "help")'})
     if 'Discord' in settings['platforms']:
         queries.extend({'engine':'discord','platform':'Discord','channel':channel,'query':'Configured channel history'} for channel in (discord_channels or []))
     return queries
